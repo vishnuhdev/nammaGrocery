@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">First Compose App</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgotPass">Forgot Password?</string>
+    <string name="login">Log In</string>
+    <string name="donthaveacc">Don\'t have account? </string>
+    <string name="signup">Sign Up</string>
+    <string name="username">Username</string>
+    <string name="terms">By continuing you agree to our Terms of Service\nand Privacy Policy.</string>
+    <string name="alreadyhaveacc">Already have an account? </string>
+    <string name="google">Continue with Google</string>
+    <string name="facebook">Continue with Facebook</string>
+    <string name="emailandpass">Enter your emails and password</string>
+
+</resources>
