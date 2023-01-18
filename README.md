@@ -1,2 +1,2 @@
 # nammaGrocery
-Basic Grocery app that made up of Android JetPacK Compose
+Basic Android mobile app that made up of Android JetPacK Compose
