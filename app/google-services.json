@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "592440194489",
+    "project_id": "namma-grocery-941dd",
+    "storage_bucket": "namma-grocery-941dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:592440194489:android:00a78fab8fa7423379f268",
+        "android_client_info": {
+          "package_name": "com.example.firstcomposeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "592440194489-707vc1gi7nur3gtklglciu63o5mku4ah.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqCH9SilhpW4tefept3z-13hl-bMNS9Kw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "592440194489-707vc1gi7nur3gtklglciu63o5mku4ah.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

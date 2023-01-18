@@ -1,17 +1,19 @@
 package com.example.firstcomposeapp.Components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -29,6 +31,8 @@ fun NormalTextInput(
     onValueChange :(String) -> Unit = {},
     Error : String
 ){
+    val focusManager = LocalFocusManager.current
+
     Text(
         text = title,
         fontFamily = FontFamily(Font(R.font.font_light)),
@@ -46,7 +50,9 @@ fun NormalTextInput(
                 .fillMaxWidth(0.94f)
                 .padding(top = 7.dp),
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Email),
+            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
             maxLines = 1,
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.White,
@@ -78,6 +84,8 @@ fun PassWordInput(
     onValueChange :(String) -> Unit = {},
     Error : String
 ){
+    val focusManager = LocalFocusManager.current
+
     val showPassword = rememberSaveable{
         mutableStateOf(false)
     }
@@ -100,7 +108,9 @@ fun PassWordInput(
             modifier = Modifier
                 .fillMaxWidth(0.94f)
                 .padding(top = 7.dp),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done,
+                keyboardType = KeyboardType.Password),
+            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
             maxLines = 1,
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.White,
