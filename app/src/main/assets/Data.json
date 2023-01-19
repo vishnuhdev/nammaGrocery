@@ -1,0 +1,218 @@
+[
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/10000063_20-fresho-broccoli.jpg",
+    "title": "Broccoli",
+    "id": "12345",
+    "price": "$2.99",
+    "description": "Broccoli is a cruciferous vegetable that is packed with vitamins and minerals. It is a great source of vitamin C and K and also contains a good amount of fiber. It has a slightly bitter taste and a crunchy texture. Broccoli can be eaten cooked or raw and it's a great addition to salads, soups, and stir-fries. It has a 4.5-star rating, it's a must-try for any grocery shopper.",
+    "category": "Vegetables",
+    "rating": "4.5"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/40033819_29-fresho-apple-shimla.jpg",
+    "title": "Apple",
+    "id": "67890",
+    "price": "$1.99",
+    "description": "Apples are a popular fruit that are rich in antioxidants and fiber. They have a crisp texture and a sweet taste. Apples can be eaten raw or cooked and they are a great addition to pies, crisps, and salads. They have a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Fruits",
+    "rating": "4"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/10000074_19-fresho-cauliflower.jpg",
+    "title": "Cauliflower",
+    "id": "23456",
+    "price": "$3.99",
+    "description": "Cauliflower is a cruciferous vegetable that is low in calories but high in nutrients. It is a good source of vitamin C, K, and B6. It has a mild flavor and a crunchy texture. Cauliflower can be eaten cooked or raw and it's a great addition to salads, soups, and stir-fries. It has a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Vegetables",
+    "rating": "4"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/10000582_12-fresho-banana-red.jpg",
+    "title": "Banana",
+    "id": "34567",
+    "price": "$0.99",
+    "description": "Bananas are a popular fruit that are high in potassium and vitamin B6. They have a soft texture and a sweet taste. Bananas can be eaten raw or cooked and they are a great addition to smoothies, baking, and as a topping for cereal and yogurt. They have a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Fruits",
+    "rating": "4"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/20000979_12-fresho-palak-cleaned-without-roots.jpg",
+    "title": "Spinach",
+    "id": "45678",
+    "price": "$2.49",
+    "description": "Spinach is a leafy green vegetable that is packed with vitamins and minerals. It is a great source of vitamin A and K, and also contains a good amount of iron. It has a slightly bitter taste and a delicate texture. Spinach can be eaten cooked or raw and it's a great addition to salads, sandwiches, and smoothies. It has a 4.5-star rating, it's a must-try for any grocery shopper.",
+    "category": "Vegetables",
+    "rating": "4.5"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/10000263_12-fresho-strawberry.jpg",
+    "title": "Strawberry",
+    "id": "56789",
+    "price": "$3.99",
+    "description": "Strawberries are a popular fruit that are rich in antioxidants and vitamin C. They have a sweet taste and a juicy texture. Strawberries can be eaten raw or cooked and they are a great addition to desserts, smoothies, and salads. They have a 4.5-star rating, it's a must-try for any grocery shopper.",
+    "category": "Fruits",
+    "rating": "4.5"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/10000070_15-fresho-carrot-orange.jpg",
+    "title": "Carrot",
+    "id": "67890",
+    "price": "$1.99",
+    "description": "Carrots are a root vegetable that are high in beta-carotene and vitamin A. They have a sweet taste and a crunchy texture. Carrots can be eaten raw or cooked and they are a great addition to salads, soups, and stews. They have a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Vegetables",
+    "rating": "4"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/40174618_4-fresho-pear-beauty.jpg",
+    "title": "Pear",
+    "id": "78901",
+    "price": "$2.99",
+    "description": "Pears are a fruit that are high in fiber and vitamin C. They have a slightly sweet and a slightly tart taste. Pears can be eaten raw or cooked and they are a great addition to pies, crisps, and salads. They have a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Fruits",
+    "rating": "4"
+  },
+  {
+    "image": "https://th.bing.com/th/id/R.729524d68677a812adf75d584e459123?rik=0nMSQYZsuk%2bZMA&riu=http%3a%2f%2fweknowyourdreams.com%2fimages%2fbeef%2fbeef-02.jpg&ehk=HKKH6scBuRulZaysFdM3ERWaF7yY2mMwUGpPZhMiLe4%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1",
+    "title": "Beef",
+    "id": "12345",
+    "price": "$5.99",
+    "description": "Beef is a high-quality, protein-rich meat that is perfect for adding flavor and nutrition to your meals. It is a good source of iron, zinc and vitamin B12. It has a rich, savory taste that is sure to please any palate. It is available in different cuts like sirloin, ribeye, tenderloin and more. With a 4.5-star rating, it's a must-try for any grocery shopper.",
+    "category": "Meat",
+    "rating": "4.5"
+  },
+  {
+    "image": "https://dao54xqhg9jfa.cloudfront.net/OMS-ProductMerchantdising/ee8f89f0-2d5c-c76e-73a2-663831d3671c/original/BiryaniCut.jpg?format=webp",
+    "title": "Chicken",
+    "id": "67890",
+    "price": "$4.99",
+    "description": "Chicken is a lean, protein-rich meat that is perfect for adding flavor and nutrition to your meals. It is a good source of protein and niacin. It has a mild taste that is sure to please any palate. It is available in different cuts like breast, thigh, drumstick and more. With a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Meat",
+    "rating": "4"
+  },
+  {
+    "image": "https://dao54xqhg9jfa.cloudfront.net/OMS-ProductMerchantdising/831e3ef8-b2e6-15d0-f8df-da9bebc9ac92/original/p2_tile_images_2nd_folder-38.jpg?format=webp",
+    "title": "Salmon",
+    "id": "23456",
+    "price": "$8.99",
+    "description": "Salmon is a fatty fish that is high in Omega-3 fatty acids and protein. It has a rich, slightly sweet taste and a tender texture. Salmon can be grilled, baked or smoked and it's a great addition to salads, sandwiches, and sushi rolls. It has a 4.5-star rating, it's a must-try for any grocery shopper.",
+    "category": "Fish",
+    "rating": "4.5"
+  },
+  {
+    "image": "https://i.ytimg.com/vi/gJR0oJl9o0k/maxresdefault.jpg",
+    "title": "Shrimp",
+    "id": "34567",
+    "price": "$12.99",
+    "description": "Shrimp is a low-calorie, protein-rich seafood that is high in vitamin B12. It has a delicate, slightly sweet taste and a tender texture. Shrimp can be grilled, baked or sautéed and it's a great addition to salads, sandwiches, and pasta dishes. It has a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Fish",
+    "rating": "4"
+  },
+  {
+    "image": "https://th.bing.com/th/id/OIP.AowArJxJUU74LYdS-MHTWAHaE6?pid=ImgDet&rs=1",
+    "title": "Pork",
+    "id": "45678",
+    "price": "$6.99",
+    "description": "Pork is a high-quality, protein-rich meat that is perfect for adding flavor and nutrition to your meals. It is a good source of thiamine, niacin and vitamin B12. It has a rich, savory taste that is sure to please any palate. It is available in different cuts like pork chops, pork tenderloin and more. With a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Meat",
+    "rating": "4"
+  },
+  {
+    "image": "https://dao54xqhg9jfa.cloudfront.net/OMS-ProductMerchantdising/66552d5c-c5b6-b3dd-8a20-c896ff486574/original/p2_tile_images_7th_folder-41.jpg?format=webp",
+    "title": "Tuna",
+    "id": "56789",
+    "price": "$9.99",
+    "description": "Tuna is a high-quality fish that is rich in protein and omega-3 fatty acids. It has a rich, slightly sweet taste and a firm texture. Tuna can be grilled, baked or sautéed and it's a great addition to salads, sandwiches, and sushi rolls. It has a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Fish",
+    "rating": "4"
+  },
+  {
+    "image": "https://d2407na1z3fc0t.cloudfront.net/prodDev/pr_2s9jxe9mwwn/1/prod_image/1587650074.3906--2020-04-2319:24:34--738?format=webp",
+    "title": "Lamb",
+    "id": "67890",
+    "price": "$8.99",
+    "description": "Lamb is a high-quality, protein-rich meat that is perfect for adding flavor and nutrition to your meals. It is a good source of iron, zinc and vitamin B12. It has a rich, savory taste that is sure to please any palate. It is available in different cuts like rack of lamb, leg of lamb and more. With a 4.5-star rating, it's a must-try for any grocery shopper.",
+    "category": "Meat",
+    "rating": "4.5"
+  },
+  {
+    "image": "https://dao54xqhg9jfa.cloudfront.net/OMS-ProductMerchantdising/548b5580-8c2f-485a-50be-1849248cb2b4/original/p2_tile_images_5th_folder-26.jpg?format=webp",
+    "title": "Cod",
+    "id": "78901",
+    "price": "$10.99",
+    "description": "Cod is a lean, white fish that is high in protein and vitamin B12. It has a mild, slightly sweet taste and a delicate texture. Cod can be grilled, baked or sautéed and it's a great addition to salads, sandwiches, and pasta dishes. It has a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Fish",
+    "rating": "4"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/40087525_4-fresho-sandwich-bread-safe-preservative-free.jpg",
+    "title": "Bread",
+    "id": "12345",
+    "price": "$2.99",
+    "description": "Bread is a staple food made from flour, water, and yeast. It comes in many varieties like white, whole wheat, sourdough, and more. It has a soft texture and a slightly sweet taste. Bread is a versatile food that can be used for sandwiches, toast, and more. With a 4.5-star rating, it's a must-try for any grocery shopper.",
+    "category": "Bakery",
+    "rating": "4.5"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/100417304_17-britannia-good-day-chocochip-cookies.jpg",
+    "title": "Cookies",
+    "id": "67890",
+    "price": "$4.99",
+    "description": "Cookies are small, sweet, baked treats that come in many varieties like chocolate chip, oatmeal, and more. They have a soft texture and a slightly sweet taste. Cookies are a great snack for anytime of the day. With a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Snacks",
+    "rating": "4"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/294278_19-lays-potato-chips-hot-sweet-chilli-flavour-best-quality.jpg",
+    "title": "Chips",
+    "id": "23456",
+    "price": "$3.99",
+    "description": "Chips are a popular snack food made from potatoes or other starchy ingredients. They come in many varieties like plain, barbecue, sour cream and onion, and more. They have a crispy texture and a slightly salty taste. Chips are a great snack for anytime of the day. With a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Snacks",
+    "rating": "4"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/1214334_5-britannia-treat-croissant-cocoa-creme-roll-100-veg.jpg",
+    "title": "Croissant",
+    "id": "34567",
+    "price": "$2.99",
+    "description": "Croissant is a French pastry made from buttery, flaky dough. They have a crispy texture and a slightly sweet taste. Croissant can be filled with chocolate, almond paste, ham and cheese or simply eaten plain. They are a perfect breakfast or brunch food. With a 4.5-star rating, it's a must-try for any grocery shopper.",
+    "category": "Bakery",
+    "rating": "4.5"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/70001664_12-english-oven-pizza-base.jpg",
+    "title": "Pizza Base",
+    "id": "45678",
+    "price": "$7.99",
+    "description": "Pizza is a popular Italian dish made from dough, tomato sauce, and cheese. It comes in many varieties like pepperoni, mushroom, and more. It has a crispy texture and a slightly sweet taste. Pizza is a great food for any time of the day. With a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Bakery",
+    "rating": "4"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/189220_5-act-ii-instant-popcorn-classic-salted-hot-fresh-delicious.jpg",
+    "title": "Popcorn",
+    "id": "56789",
+    "price": "$2.99",
+    "description": "Popcorn is a type of corn that explodes from the kernel when heated. They have a crispy texture and a slightly sweet taste. Popcorn is a great snack for anytime of the day and can be flavored with butter, cheese, or caramel. With a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Snacks",
+    "rating": "4"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/40204406_1-britannia-chocolate-brownie.jpg",
+    "title": "Brownie",
+    "id": "67890",
+    "price": "$3.99",
+    "description": "Brownie is a square or rectangular chocolate cake. It has a dense texture and a rich chocolate taste. Brownies can be plain or with nuts, chocolate chips, or frosting. They make a perfect dessert or snack. With a 4.5-star rating, it's a must-try for any grocery shopper.",
+    "category": "Bakery",
+    "rating": "4.5"
+  },
+  {
+    "image": "https://www.bigbasket.com/media/uploads/p/l/100012352_10-britannia-nutrichoice-sugar-free-cream-cracker.jpg",
+    "title": "Crackers",
+    "id": "78901",
+    "price": "$2.99",
+    "description": "Crackers are a type of baked food that are often eaten with cheese or spreads. They come in many varieties like plain, whole wheat, and more. They have a crispy texture and a slightly salty taste. Crackers are a great snack for anytime of the day. With a 4-star rating, it's a great choice for any grocery shopper.",
+    "category": "Snacks",
+    "rating": "4"
+  }
+]
