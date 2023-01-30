@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.example.firstcomposeapp.Screens.BottomNavigation.BottomBarScreen
 import com.example.firstcomposeapp.Screens.BottomNavigation.MainScreens.AccountScreen
+import com.example.firstcomposeapp.Screens.BottomNavigation.MainScreens.Home.DetailsScreen
 import com.example.firstcomposeapp.Screens.BottomNavigation.MainScreens.HomeScreen
 import com.example.firstcomposeapp.Screens.ScreenContent
 import com.example.firstcomposeapp.navigation.Graph
@@ -53,10 +54,9 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
         route = Graph.DETAILS,
         startDestination = DetailsScreen.Information.route
     ) {
-        composable(route = DetailsScreen.Information.route) {
-            ScreenContent(name = DetailsScreen.Information.route) {
-                navController.navigate(DetailsScreen.Overview.route)
-            }
+        composable(
+            route = DetailsScreen.Information.route) {
+            DetailsScreen(navController = navController)
         }
         composable(route = DetailsScreen.Overview.route) {
             ScreenContent(name = DetailsScreen.Overview.route) {
@@ -72,4 +72,8 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
 sealed class DetailsScreen(val route: String) {
     object Information : DetailsScreen(route = "INFORMATION")
     object Overview : DetailsScreen(route = "OVERVIEW")
+
+    object DetailArgs {
+        const val ProductData = "Productdata"
+    }
 }

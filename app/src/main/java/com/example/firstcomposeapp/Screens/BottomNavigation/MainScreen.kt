@@ -19,5 +19,3 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
         HomeNavGraph(navController = navController)
     }
 }
-
-

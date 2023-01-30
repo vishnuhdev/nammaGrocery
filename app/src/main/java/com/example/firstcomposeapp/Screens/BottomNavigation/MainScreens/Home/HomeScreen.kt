@@ -1,0 +1,228 @@
+package com.example.firstcomposeapp.Screens.BottomNavigation.MainScreens
+
+import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.firstcomposeapp.ApiService.ProductData
+import com.example.firstcomposeapp.ApiService.ProductDataInstance
+import com.example.firstcomposeapp.Components.ListItemCard
+import com.example.firstcomposeapp.Components.ShimmerAnimation
+import com.example.firstcomposeapp.R
+import com.example.firstcomposeapp.ui.theme.PrimaryGreen
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreen(navController: NavHostController) {
+    val products = ProductDataInstance.getProduct.getProductInfo()
+    val data = remember { mutableStateOf(ProductData()) }
+
+    var isLoading = rememberSaveable {
+        mutableStateOf(true)
+    }
+
+        products.enqueue(object : Callback<ProductData> {
+            override fun onResponse(call: Call<ProductData>, response: Response<ProductData>) {
+                isLoading.value = true
+                val productData = response.body()
+                isLoading.value = false
+                if (productData != null) {
+                    data.value = productData
+                }
+            }
+
+            override fun onFailure(call: Call<ProductData>, t: Throwable) {
+                if(data.value == null) {
+                    isLoading.value = true
+                }
+                Log.d("Err", t.toString())
+                if(data.value == null) {
+                    isLoading.value = false
+                }
+            }
+        })
+
+    val scrollState = rememberScrollState()
+    val vegetableList = data.value.filter { it.category == "Vegetables" }
+    val snacks = data.value.filter { it.category == "Snacks" || it.category == "Bakery" }
+    val meat = data.value.filter { it.category == "Meat" || it.category == "Fish" }
+
+    val (value, onValueChange) = remember { mutableStateOf("") }
+
+    if (isLoading.value) {
+        ShimmerEff()
+    }
+    else {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight(0.9f)
+                .verticalScroll(state = scrollState)
+                .background(color = Color.White)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .height(38.dp)
+                    .width(38.dp)
+                    .padding(top = 10.dp)
+            )
+            Row(
+                modifier = Modifier
+                    .padding(top = 10.dp),
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_baseline_location_on_24),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(Color.Gray)
+                )
+                Text(
+                    text = "Chennai,TN",
+                    fontFamily = FontFamily(Font(R.font.font_medium)),
+                    color = Color.Gray,
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .padding(top = 2.dp)
+                )
+            }
+            TextField(
+                value = value,
+                onValueChange = onValueChange,
+                leadingIcon = { Icon(Icons.Filled.Search, null, tint = Color.Black) },
+                modifier = Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth(0.98f)
+                    .background(Color(0xFFF2F3F2), RoundedCornerShape(14.dp)),
+                placeholder = {
+                    Text(
+                        text = "Search Store",
+                        fontFamily = FontFamily(Font(R.font.font_bold)),
+                        color = Color.Gray
+                    )
+                },
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    containerColor = Color.Transparent,
+                    cursorColor = Color.DarkGray
+                )
+            )
+            Image(
+                painter = painterResource(id = R.drawable.banner),
+                null,
+                modifier = Modifier
+                    .width(420.dp)
+                    .height(120.dp)
+            )
+            Heading(title = "Exclusive Offer")
+            LazyRow(
+                contentPadding = PaddingValues(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(15.dp),
+                modifier = Modifier.fillMaxSize(1F)
+            ) {
+                items(data.value) { data ->
+                    ListItemCard(data = data,navController = navController)
+                }
+            }
+            Heading(title = "Snacks & Bakery Items")
+            LazyRow(
+                contentPadding = PaddingValues(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(15.dp),
+                modifier = Modifier.fillMaxSize(1F)
+            ) {
+                items(snacks) { data ->
+                    ListItemCard(data = data,navController = navController)
+                }
+            }
+            Heading(title = "Vegetables")
+            LazyRow(
+                contentPadding = PaddingValues(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(15.dp),
+                modifier = Modifier.fillMaxSize(1F)
+            ) {
+                items(vegetableList) { data ->
+                    ListItemCard(data = data,navController = navController)
+                }
+            }
+            Heading(title = "Meat & Fish")
+            LazyRow(
+                contentPadding = PaddingValues(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(15.dp),
+                modifier = Modifier.fillMaxSize(1F)
+            ) {
+                items(meat) { data ->
+                    ListItemCard(data = data,navController = navController)
+                }
+            }
+
+        }
+    }
+
+
+}
+
+@Composable
+fun Heading(
+    title: String
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(0.95f)
+            .padding(top = 15.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            fontFamily = FontFamily(Font(R.font.font_bold)),
+            fontSize = 24.sp,
+            color = Color.Black
+        )
+        TextButton(onClick = {}) {
+            Text(
+                text = "See all",
+                fontFamily = FontFamily(Font(R.font.font_medium)),
+                fontSize = 16.sp,
+                color = PrimaryGreen
+            )
+
+        }
+    }
+}
+
+@Composable
+fun ShimmerEff(){
+    LazyColumn {
+        repeat(1) {
+            item {
+                ShimmerAnimation()
+            }
+        }
+    }
+}

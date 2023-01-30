@@ -3,30 +3,43 @@ package com.example.firstcomposeapp.Components
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import com.example.firstcomposeapp.ApiService.ProductDataItem
 import com.example.firstcomposeapp.R
+import com.example.firstcomposeapp.navigation.Graph
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
+import com.example.nestednavigationbottombardemo.graphs.DetailsScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListItemCard(
-//    Image :String,
-//    title: String,
-//    price: String,
+    data: ProductDataItem,
+    navController: NavController,
 ) {
     Card(
-        onClick = { /*TODO*/ },
-//        elevation = CardDefaults.cardElevation(12.dp),
+        onClick = {
+           navController.currentBackStackEntry?.savedStateHandle?.apply {
+               set(DetailsScreen.DetailArgs.ProductData , data)
+           }
+            navController.navigate(Graph.DETAILS) {
+                popUpTo(Graph.DETAILS) {
+                    inclusive = true
+                }
+            }
+        },
         colors = CardDefaults.cardColors(Color.White),
     ) {
         Box(
@@ -41,7 +54,7 @@ fun ListItemCard(
         ) {
             Column {
                 Image(
-                    painter = painterResource(id = R.drawable.banana),
+                    painter = rememberAsyncImagePainter(data.image),
                     contentDescription = "Image",
                     modifier = Modifier
                         .height(79.dp)
@@ -53,7 +66,7 @@ fun ListItemCard(
                         .height(20.dp)
                 )
                 Text(
-                    text = "Organic Bananas",
+                    text = data.title.toString(),
                     fontFamily = FontFamily(Font(R.font.font_bold)),
                     fontSize = 18.sp,
                 )
@@ -78,7 +91,7 @@ fun ListItemCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "₹400",
+                        text = data.price.toString(),
                         fontFamily = FontFamily(Font(R.font.font_bold)),
                         fontSize = 16.sp,
                     )
@@ -101,14 +114,13 @@ fun CustomAdder(
                 .clip(RoundedCornerShape(4.dp)),
             colors = ButtonDefaults.buttonColors(PrimaryGreen),
         ) {
-            Image(
+            Icon(
                 modifier = Modifier
-                    .height(18.dp)
-                    .width(18.dp),
-                painter = painterResource(id = R.drawable.plus),
+                    .height(24.dp)
+                    .width(24.dp),
+                imageVector = Icons.Default.Add,
                 contentDescription = null,
             )
         }
-
     }
 }
