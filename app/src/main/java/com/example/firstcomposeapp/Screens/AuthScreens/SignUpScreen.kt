@@ -1,4 +1,4 @@
-package com.example.firstcomposeapp.Screens
+package com.example.firstcomposeapp.screens.authScreens
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -23,9 +23,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.firstcomposeapp.Components.CustomButton
 import com.example.firstcomposeapp.R
 import com.example.firstcomposeapp.Screen
+import com.example.firstcomposeapp.components.CustomButton
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase

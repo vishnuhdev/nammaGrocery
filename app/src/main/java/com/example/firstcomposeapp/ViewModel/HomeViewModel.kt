@@ -2,8 +2,8 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.firstcomposeapp.ApiService.ProductData
-import com.example.firstcomposeapp.ApiService.ProductDataInstance
+import com.example.firstcomposeapp.apiService.ProductData
+import com.example.firstcomposeapp.apiService.ProductDataInstance
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -12,7 +12,7 @@ import retrofit2.Response
 class MyViewModel: ViewModel() {
     val data = mutableStateOf<ProductData?>(null)
     val isLoading = mutableStateOf(false)
-    val products = ProductDataInstance.getProduct.getProductInfo()
+    private val products = ProductDataInstance.getProduct.getProductInfo()
 
     fun fetchData() {
         viewModelScope.launch {

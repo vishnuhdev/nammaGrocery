@@ -1,4 +1,4 @@
-package com.example.firstcomposeapp.Components
+package com.example.firstcomposeapp.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions

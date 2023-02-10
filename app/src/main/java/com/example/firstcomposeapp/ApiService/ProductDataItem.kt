@@ -1,4 +1,4 @@
-package com.example.firstcomposeapp.ApiService
+package com.example.firstcomposeapp.apiService
 
 import android.os.Parcel
 import android.os.Parcelable

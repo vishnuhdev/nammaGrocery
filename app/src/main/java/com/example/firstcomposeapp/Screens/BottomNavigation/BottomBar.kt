@@ -1,6 +1,7 @@
-package com.example.firstcomposeapp.Screens.BottomNavigation
+package com.example.firstcomposeapp.screens.bottomNavigation
 
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.Icon
@@ -8,9 +9,11 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -36,6 +39,8 @@ fun BottomBar(navController: NavHostController) {
     if (bottomBarDestination) {
         NavigationBar(
             containerColor = Color.White,
+            modifier = Modifier
+                .height(60.dp)
         ) {
             screens.forEach { screen ->
                 AddItem(

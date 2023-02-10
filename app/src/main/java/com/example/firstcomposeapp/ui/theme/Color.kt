@@ -13,9 +13,6 @@ val RatingColor = Color(0xFFF3603F)
 
 val ShimmerColorShades = listOf(
     Color.LightGray.copy(0.9f),
-
     Color.LightGray.copy(0.2f),
-
     Color.LightGray.copy(0.9f)
-
 )

@@ -1,4 +1,4 @@
-package com.example.firstcomposeapp.Screens
+package com.example.firstcomposeapp.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

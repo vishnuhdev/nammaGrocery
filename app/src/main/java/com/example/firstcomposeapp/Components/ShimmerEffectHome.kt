@@ -1,4 +1,4 @@
-package com.example.firstcomposeapp.Components
+package com.example.firstcomposeapp.components
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background

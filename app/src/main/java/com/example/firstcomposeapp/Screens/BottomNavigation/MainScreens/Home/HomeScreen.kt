@@ -1,5 +1,6 @@
-package com.example.firstcomposeapp.Screens.BottomNavigation.MainScreens
+package com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.home
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,12 +9,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,26 +27,29 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.firstcomposeapp.ApiService.ProductData
-import com.example.firstcomposeapp.ApiService.ProductDataInstance
-import com.example.firstcomposeapp.Components.ListItemCard
-import com.example.firstcomposeapp.Components.ShimmerAnimation
 import com.example.firstcomposeapp.R
+import com.example.firstcomposeapp.apiService.ProductData
+import com.example.firstcomposeapp.apiService.ProductDataInstance
+import com.example.firstcomposeapp.components.ListItemCard
+import com.example.firstcomposeapp.components.ShimmerAnimation
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun HomeScreen(navController: NavHostController) {
     val products = ProductDataInstance.getProduct.getProductInfo()
     val data = remember { mutableStateOf(ProductData()) }
 
+
     var isLoading = rememberSaveable {
         mutableStateOf(true)
     }
 
+    LaunchedEffect(key1 = Unit) {
+        isLoading.value = true
         products.enqueue(object : Callback<ProductData> {
             override fun onResponse(call: Call<ProductData>, response: Response<ProductData>) {
                 isLoading.value = true
@@ -56,22 +61,15 @@ fun HomeScreen(navController: NavHostController) {
             }
 
             override fun onFailure(call: Call<ProductData>, t: Throwable) {
-                if(data.value == null) {
-                    isLoading.value = true
-                }
                 Log.d("Err", t.toString())
-                if(data.value == null) {
-                    isLoading.value = false
-                }
             }
         })
+    }
 
     val scrollState = rememberScrollState()
     val vegetableList = data.value.filter { it.category == "Vegetables" }
     val snacks = data.value.filter { it.category == "Snacks" || it.category == "Bakery" }
     val meat = data.value.filter { it.category == "Meat" || it.category == "Fish" }
-
-    val (value, onValueChange) = remember { mutableStateOf("") }
 
     if (isLoading.value) {
         ShimmerEff()
@@ -111,28 +109,30 @@ fun HomeScreen(navController: NavHostController) {
                         .padding(top = 2.dp)
                 )
             }
-            TextField(
-                value = value,
-                onValueChange = onValueChange,
-                leadingIcon = { Icon(Icons.Filled.Search, null, tint = Color.Black) },
-                modifier = Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth(0.98f)
-                    .background(Color(0xFFF2F3F2), RoundedCornerShape(14.dp)),
-                placeholder = {
-                    Text(
-                        text = "Search Store",
-                        fontFamily = FontFamily(Font(R.font.font_bold)),
-                        color = Color.Gray
-                    )
-                },
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    containerColor = Color.Transparent,
-                    cursorColor = Color.DarkGray
-                )
-            )
+//            TextField(
+//                value = value,
+//                onValueChange = onValueChange,
+//                leadingIcon = { Icon(Icons.Filled.Search, null, tint = Color.Black) },
+//                modifier = Modifier
+//                    .padding(10.dp)
+//                    .fillMaxWidth(0.98f)
+//                    .background(Color(0xFFF2F3F2), RoundedCornerShape(14.dp)),
+//                placeholder = {
+//                    Text(
+//                        text = "Search Store",
+//                        fontFamily = FontFamily(Font(R.font.font_bold)),
+//                        color = Color.Gray
+//                    )
+//                },
+//                colors = TextFieldDefaults.textFieldColors(
+//                    focusedIndicatorColor = Color.Transparent,
+//                    unfocusedIndicatorColor = Color.Transparent,
+//                    containerColor = Color.Transparent,
+//                    cursorColor = Color.DarkGray
+//                )
+//            )
+            Spacer(modifier = Modifier
+                .height(20.dp))
             Image(
                 painter = painterResource(id = R.drawable.banner),
                 null,
@@ -180,11 +180,8 @@ fun HomeScreen(navController: NavHostController) {
                     ListItemCard(data = data,navController = navController)
                 }
             }
-
         }
     }
-
-
 }
 
 @Composable
@@ -211,7 +208,6 @@ fun Heading(
                 fontSize = 16.sp,
                 color = PrimaryGreen
             )
-
         }
     }
 }

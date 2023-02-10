@@ -1,4 +1,5 @@
 @file:Suppress("OPT_IN_IS_NOT_ENABLED")
+package com.example.firstcomposeapp.screens.authScreens
 
 
 import android.util.Log
@@ -22,11 +23,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.firstcomposeapp.Components.CustomButton
-import com.example.firstcomposeapp.Components.NormalTextInput
-import com.example.firstcomposeapp.Components.PassWordInput
 import com.example.firstcomposeapp.R
 import com.example.firstcomposeapp.Screen
+import com.example.firstcomposeapp.components.CustomButton
+import com.example.firstcomposeapp.components.NormalTextInput
+import com.example.firstcomposeapp.components.PassWordInput
 import com.example.firstcomposeapp.navigation.Graph
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
 import com.google.firebase.auth.ktx.auth

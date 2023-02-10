@@ -1,3 +1,4 @@
+package com.example.firstcomposeapp.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

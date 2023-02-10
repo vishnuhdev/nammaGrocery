@@ -1,4 +1,4 @@
-package com.example.firstcomposeapp.ApiService
+package com.example.firstcomposeapp.apiService
 
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -18,7 +18,7 @@ interface GetProduct {
 }
 
 object ProductDataInstance{
-    val getProduct:GetProduct
+    val getProduct: GetProduct
     val okHttpClient = OkHttpClient.Builder()
         .sslSocketFactory(
             SSLContext.getInstance("SSL").apply {

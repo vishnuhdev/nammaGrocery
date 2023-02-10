@@ -1,25 +1,25 @@
-package com.example.firstcomposeapp.Screens.BottomNavigation.MainScreens.Home
+package com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.home
 
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.KeyboardArrowDown
-import androidx.compose.material.icons.outlined.KeyboardArrowUp
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -27,26 +27,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.firstcomposeapp.ApiService.ProductDataItem
-import com.example.firstcomposeapp.Components.AppHeader
-import com.example.firstcomposeapp.Components.CustomButton
+import com.example.firstcomposeapp.DatabaseHelper
 import com.example.firstcomposeapp.R
+import com.example.firstcomposeapp.apiService.ProductDataItem
+import com.example.firstcomposeapp.apiService.roomDataBase.FavoriteTable
+import com.example.firstcomposeapp.components.AppHeader
+import com.example.firstcomposeapp.components.CustomButton
+import com.example.firstcomposeapp.navigation.DetailsScreen
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
 import com.example.firstcomposeapp.ui.theme.RatingColor
-import com.example.nestednavigationbottombardemo.graphs.DetailsScreen
+
 
 @Composable
 fun DetailsScreen(navController: NavController) {
 
+    val favorite = DatabaseHelper.getInstance()
     val scrollState = rememberScrollState()
-    var showMore = rememberSaveable {
+    val showMore = rememberSaveable {
         mutableStateOf(false)
     }
-
-    val data =
-        navController.previousBackStackEntry?.savedStateHandle?.get<ProductDataItem>(DetailsScreen.DetailArgs.ProductData)
-    Log.d("Detail", data.toString())
+    val favorData = remember { mutableStateOf(emptyList<FavoriteTable>()) }
+    val data = navController.previousBackStackEntry?.savedStateHandle?.get<ProductDataItem>(DetailsScreen.DetailArgs.ProductData)
+    val match = favorData.value.any { it.id == data?.id }
+    val isFavorite = remember { mutableStateOf(match) }
     val ratingCount = data?.rating?.toFloatOrNull()?.toInt() ?: 0
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = isFavorite,favorData,match, block = {
+        favorData.value = DatabaseHelper.getInstance()?.favoriteDao()?.getAll()!!
+        val match = favorData.value.any { it.id == data?.id }
+        isFavorite.value = match
+    })
 
     Column(modifier = Modifier
         .fillMaxHeight(0.89f)
@@ -83,12 +94,38 @@ fun DetailsScreen(navController: NavController) {
                         modifier = Modifier.padding(start = 15.dp, top = 5.dp),
                         color = Color.Gray.copy(alpha = 0.5f))
                 }
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(Icons.Outlined.FavoriteBorder,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .height(28.dp)
-                            .width(28.dp))
+                if (!isFavorite.value){
+                    IconButton(onClick = {
+                        val item =FavoriteTable(data.id.toString(),data.category,data.image,data.price,data.title,data.description,data.rating)
+                        if (favorite != null) {
+                            favorite.favoriteDao()?.insert(item)
+                        }
+                        Toast.makeText(context,"${data.title} is Successfully Added to Favorite!!",Toast.LENGTH_SHORT).show()
+                        isFavorite.value = !isFavorite.value
+                    }) {
+                        Icon(Icons.Outlined.FavoriteBorder,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .height(28.dp)
+                                .width(28.dp))
+                    }
+                }else{
+                    IconButton(onClick = {
+                        val items = data.id?.let { FavoriteTable(it,data.category,data.image,data.price,data.title,data.description, data.rating) }
+                        if (items != null) {
+                            favorite?.favoriteDao()?.delete(items)
+                        }
+                        Toast.makeText(context,"Removed from Favorite",Toast.LENGTH_SHORT).show()
+                        isFavorite.value = !isFavorite.value
+                    }) {
+                        Icon(Icons.Outlined.Favorite,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .height(28.dp)
+                                .width(28.dp),
+                            tint = Color.Red
+                        )
+                    }
                 }
             }
         }
@@ -168,7 +205,7 @@ fun DetailsScreen(navController: NavController) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth(0.98f)
-                .padding( top = 10.dp)
+                .padding(top = 10.dp)
         ) {
             Text(text = "Review",
                 fontSize = 18.sp,
@@ -190,7 +227,6 @@ fun DetailsScreen(navController: NavController) {
 
                 }
             }
-
         }
         Divider(
             thickness = 0.5.dp,

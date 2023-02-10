@@ -1,4 +1,4 @@
-package com.example.firstcomposeapp.Screens.BottomNavigation.MainScreens
+package com.example.firstcomposeapp.screens.bottomNavigation.mainScreens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

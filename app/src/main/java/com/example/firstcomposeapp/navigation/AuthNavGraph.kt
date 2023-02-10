@@ -1,12 +1,12 @@
 package com.example.firstcomposeapp.navigation
 
-import LoginWithEmail
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.firstcomposeapp.Screen
-import com.example.firstcomposeapp.Screens.SignUpScreen
+import com.example.firstcomposeapp.screens.authScreens.LoginWithEmail
+import com.example.firstcomposeapp.screens.authScreens.SignUpScreen
 
 fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
     navigation(

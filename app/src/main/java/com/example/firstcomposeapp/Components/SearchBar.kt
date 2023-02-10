@@ -1,4 +1,4 @@
-package com.example.firstcomposeapp.Components
+package com.example.firstcomposeapp.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -76,6 +76,7 @@ fun SearchBar(
         )
     }
 }
+
 
 @Composable
 fun SearchTextField(

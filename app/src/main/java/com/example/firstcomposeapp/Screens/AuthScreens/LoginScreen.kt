@@ -1,3 +1,4 @@
+package com.example.firstcomposeapp.screens.authScreens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -21,7 +22,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.firstcomposeapp.Components.ButtonWithImage
+import com.example.firstcomposeapp.components.ButtonWithImage
 import com.example.firstcomposeapp.R
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
 

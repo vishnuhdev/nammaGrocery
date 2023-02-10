@@ -1,4 +1,4 @@
-package com.example.firstcomposeapp.Components
+package com.example.firstcomposeapp.components
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -17,11 +17,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.firstcomposeapp.ApiService.ProductDataItem
 import com.example.firstcomposeapp.R
+import com.example.firstcomposeapp.apiService.ProductDataItem
+import com.example.firstcomposeapp.navigation.DetailsScreen
 import com.example.firstcomposeapp.navigation.Graph
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
-import com.example.nestednavigationbottombardemo.graphs.DetailsScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

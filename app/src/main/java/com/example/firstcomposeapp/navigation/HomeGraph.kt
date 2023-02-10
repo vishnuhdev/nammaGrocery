@@ -1,4 +1,4 @@
-package com.example.nestednavigationbottombardemo.graphs
+package com.example.firstcomposeapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
@@ -7,12 +7,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
-import com.example.firstcomposeapp.Screens.BottomNavigation.BottomBarScreen
-import com.example.firstcomposeapp.Screens.BottomNavigation.MainScreens.AccountScreen
-import com.example.firstcomposeapp.Screens.BottomNavigation.MainScreens.Home.DetailsScreen
-import com.example.firstcomposeapp.Screens.BottomNavigation.MainScreens.HomeScreen
-import com.example.firstcomposeapp.Screens.ScreenContent
-import com.example.firstcomposeapp.navigation.Graph
+import com.example.firstcomposeapp.screens.bottomNavigation.BottomBarScreen
+import com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.AccountScreen
+import com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.cartScreen.CartScreen
+import com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.exploreScreen.ExploreScreen
+import com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.favoriteScreen.FavoriteScreen
+import com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.home.DetailsScreen
+import com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.home.HomeScreen
 
 @Composable
 fun HomeNavGraph(navController: NavHostController = rememberNavController()) {
@@ -25,22 +26,13 @@ fun HomeNavGraph(navController: NavHostController = rememberNavController()) {
             HomeScreen(navController = navController)
         }
         composable(route = BottomBarScreen.Explore.route) {
-            ScreenContent(
-                name = BottomBarScreen.Explore.route,
-                onClick = { }
-            )
+            ExploreScreen(navController = navController)
         }
         composable(route = BottomBarScreen.Cart.route) {
-            ScreenContent(
-                name = BottomBarScreen.Cart.route,
-                onClick = { }
-            )
+            CartScreen(navController = navController)
         }
         composable(route = BottomBarScreen.Favorite.route) {
-            ScreenContent(
-                name = BottomBarScreen.Favorite.route,
-                onClick = { }
-            )
+            FavoriteScreen(navController = navController)
         }
         composable(route = BottomBarScreen.Account.route) {
             AccountScreen(navController = rememberNavController())
@@ -58,20 +50,11 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
             route = DetailsScreen.Information.route) {
             DetailsScreen(navController = navController)
         }
-        composable(route = DetailsScreen.Overview.route) {
-            ScreenContent(name = DetailsScreen.Overview.route) {
-                navController.popBackStack(
-                    route = DetailsScreen.Information.route,
-                    inclusive = false
-                )
-            }
-        }
     }
 }
 
 sealed class DetailsScreen(val route: String) {
     object Information : DetailsScreen(route = "INFORMATION")
-    object Overview : DetailsScreen(route = "OVERVIEW")
 
     object DetailArgs {
         const val ProductData = "Productdata"

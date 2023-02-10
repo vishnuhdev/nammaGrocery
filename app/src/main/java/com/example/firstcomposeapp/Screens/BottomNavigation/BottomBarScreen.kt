@@ -1,4 +1,4 @@
-package com.example.firstcomposeapp.Screens.BottomNavigation
+package com.example.firstcomposeapp.screens.bottomNavigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
