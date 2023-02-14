@@ -49,6 +49,7 @@ fun ExploreScreen(navController: NavHostController) {
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.9f)
+            .background(color = Color.White)
 //            .verticalScroll(state = scrollState)
     ) {
         AppHeader(

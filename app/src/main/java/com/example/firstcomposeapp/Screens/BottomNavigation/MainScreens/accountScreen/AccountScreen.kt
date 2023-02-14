@@ -1,5 +1,6 @@
 package com.example.firstcomposeapp.screens.bottomNavigation.mainScreens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,7 +11,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,10 +26,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.firstcomposeapp.DatabaseHelper
 import com.example.firstcomposeapp.R
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,6 +42,25 @@ fun AccountScreen(navController: NavController) {
 
     val isLoading = rememberSaveable {
         mutableStateOf(false)
+    }
+
+    val dataBase = Firebase.database.reference
+    val auth = Firebase.auth
+    val userEmailId = Firebase.auth.currentUser?.email
+
+    val userName = remember {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(key1 = Unit){
+        auth.uid?.let { it ->
+            dataBase.child("AuthInfo").child(it).get().addOnSuccessListener {
+                val authInfoMap = it.value as Map<*, *>
+                userName.value = authInfoMap["userName"].toString()
+            }.addOnFailureListener{
+                Log.e("firebase", "Error getting data", it)
+            }
+        }
     }
 
     Column(
@@ -78,16 +104,18 @@ fun AccountScreen(navController: NavController) {
                     )
                     {
                         Text(
-                            text = "User Name",
+                            text = userName.value,
                             fontFamily = FontFamily(Font(R.font.font_bold)),
                             fontSize = 18.sp,
                         )
-                        Text(
-                            text = "user@gmail.com",
-                            fontFamily = FontFamily(Font(R.font.font_medium)),
-                            fontSize = 14.sp,
-                            color = Color.Gray.copy(alpha = 0.7f)
-                        )
+                        if (userEmailId != null) {
+                            Text(
+                                text = userEmailId,
+                                fontFamily = FontFamily(Font(R.font.font_medium)),
+                                fontSize = 14.sp,
+                                color = Color.Gray.copy(alpha = 0.7f)
+                            )
+                        }
                     }
                 }
             }
@@ -117,6 +145,10 @@ fun AccountScreen(navController: NavController) {
             ) {
                 TextButton(onClick = {
                     isLoading.value = true
+                    GlobalScope.launch {
+                        val items = DatabaseHelper.getInstance()?.favoriteDao()?.getAll()!!
+                        DatabaseHelper.getInstance()?.favoriteDao()?.deleteAll(items)
+                    }
                     Firebase.auth.signOut()
                     isLoading.value = false
                 },

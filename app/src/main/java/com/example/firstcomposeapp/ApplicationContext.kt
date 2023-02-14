@@ -15,10 +15,6 @@ class ImpApplication : Application() {
 
         private lateinit var instance: ImpApplication
 
-        fun getInstance(): ImpApplication {
-            return instance
-        }
-
         fun applicationContext(): Context {
             return instance.applicationContext
         }

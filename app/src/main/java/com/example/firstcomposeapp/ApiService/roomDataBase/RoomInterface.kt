@@ -7,6 +7,9 @@ interface FavoriteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(favItems : FavoriteTable)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun fireBaseInsert(favItems: MutableList<FavoriteTable>)
+
     @Query("SELECT * FROM favoriteTable")
     suspend fun getAll(): List<FavoriteTable>
 

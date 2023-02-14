@@ -27,12 +27,17 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.firstcomposeapp.DatabaseHelper
 import com.example.firstcomposeapp.R
 import com.example.firstcomposeapp.apiService.ProductData
 import com.example.firstcomposeapp.apiService.ProductDataInstance
+import com.example.firstcomposeapp.apiService.roomDataBase.FavoriteTable
 import com.example.firstcomposeapp.components.ListItemCard
 import com.example.firstcomposeapp.components.ShimmerAnimation
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -50,6 +55,33 @@ fun HomeScreen(navController: NavHostController) {
 
     LaunchedEffect(key1 = Unit) {
         isLoading.value = true
+        val userId = Firebase.auth
+        val namesRef = Firebase.database.reference
+        val roomDataBase = DatabaseHelper.getInstance()
+        userId.uid?.let { it ->
+            namesRef.child("FavoriteList").child(it).get().addOnSuccessListener { snapshot ->
+                val value = snapshot.children
+
+                    val itemList = mutableListOf<FavoriteTable>()
+                    value.forEach { entry ->
+                        val item = entry.getValue(FavoriteTable::class.java)
+                        Log.d("Entry",item.toString())
+                        if (item != null) {
+                            itemList.add(
+                                item
+                            )
+                        }
+                    }
+                    Log.i("firebase", "got value $itemList")
+                    if (roomDataBase != null) {
+                        roomDataBase.favoriteDao()?.fireBaseInsert(itemList)
+                        isLoading.value = false
+
+                }
+            }.addOnFailureListener {
+                Log.e("firebase", "Error getting data", it)
+            }
+        }
         products.enqueue(object : Callback<ProductData> {
             override fun onResponse(call: Call<ProductData>, response: Response<ProductData>) {
                 isLoading.value = true
@@ -73,11 +105,10 @@ fun HomeScreen(navController: NavHostController) {
 
     if (isLoading.value) {
         ShimmerEff()
-    }
-    else {
+    } else {
         Column(
             modifier = Modifier
-                .fillMaxHeight(0.9f)
+                .fillMaxHeight(0.93f)
                 .verticalScroll(state = scrollState)
                 .background(color = Color.White)
                 .fillMaxWidth(),
@@ -147,7 +178,7 @@ fun HomeScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize(1F)
             ) {
                 items(data.value) { data ->
-                    ListItemCard(data = data,navController = navController)
+                    ListItemCard(data = data, navController = navController)
                 }
             }
             Heading(title = "Snacks & Bakery Items")
@@ -157,7 +188,7 @@ fun HomeScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize(1F)
             ) {
                 items(snacks) { data ->
-                    ListItemCard(data = data,navController = navController)
+                    ListItemCard(data = data, navController = navController)
                 }
             }
             Heading(title = "Vegetables")
@@ -167,7 +198,7 @@ fun HomeScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize(1F)
             ) {
                 items(vegetableList) { data ->
-                    ListItemCard(data = data,navController = navController)
+                    ListItemCard(data = data, navController = navController)
                 }
             }
             Heading(title = "Meat & Fish")
@@ -177,7 +208,7 @@ fun HomeScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize(1F)
             ) {
                 items(meat) { data ->
-                    ListItemCard(data = data,navController = navController)
+                    ListItemCard(data = data, navController = navController)
                 }
             }
         }
@@ -186,7 +217,7 @@ fun HomeScreen(navController: NavHostController) {
 
 @Composable
 fun Heading(
-    title: String
+    title: String,
 ) {
     Row(
         modifier = Modifier
@@ -213,7 +244,7 @@ fun Heading(
 }
 
 @Composable
-fun ShimmerEff(){
+fun ShimmerEff() {
     LazyColumn {
         repeat(1) {
             item {

@@ -27,6 +27,9 @@ import com.example.firstcomposeapp.DatabaseHelper
 import com.example.firstcomposeapp.R
 import com.example.firstcomposeapp.apiService.roomDataBase.FavoriteTable
 import com.example.firstcomposeapp.components.AppHeader
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -43,7 +46,7 @@ fun FavoriteScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .background(color = Color.White)
-            .fillMaxHeight(0.9f)
+            .fillMaxHeight(0.93f)
             .background(color = Color.White)
     ) {
         AppHeader(
@@ -88,26 +91,32 @@ fun FavoriteScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(15.dp),
         ) {
             items(favorData.value) { data ->
-                FavourCard(data = data, navController = navController, onClick = {
-                    val item = FavoriteTable(data.id,
+                FavourCard(data = data, navController = navController) {
+                    val item = FavoriteTable(
+                        data.id,
                         data.category,
                         data.image,
                         data.price,
                         data.title,
                         data.description,
-                        data.rating)
+                        data.rating
+                    )
                     DatabaseHelper.getInstance()?.favoriteDao()?.delete(
                         favItems = item
                     )
+                    val userId = Firebase.auth
+                    val database = Firebase.database.reference
+                    userId.uid?.let {
+                        database.child("FavoriteList").child(it).child(data.id).removeValue()
+                    }
                     GlobalScope.launch {
                         favorData.value = DatabaseHelper.getInstance()?.favoriteDao()?.getAll()!!
                     }
                     Toast.makeText(context, "Removed from Favorite", Toast.LENGTH_SHORT).show()
-                })
+                }
             }
         }
     }
-
 }
 
 
@@ -174,5 +183,4 @@ fun FavourCard(data: FavoriteTable, navController: NavHostController, onClick: (
 
         }
     }
-
 }

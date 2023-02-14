@@ -1,5 +1,6 @@
 package com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.home
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -36,22 +37,33 @@ import com.example.firstcomposeapp.components.CustomButton
 import com.example.firstcomposeapp.navigation.DetailsScreen
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
 import com.example.firstcomposeapp.ui.theme.RatingColor
-
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun DetailsScreen(navController: NavController) {
+    //FireBase
+    val database = Firebase.database.reference
+    val userId = Firebase.auth
+
+    //Room Data Base
+    val favorData = remember { mutableStateOf(emptyList<FavoriteTable>()) }
 
     val favorite = DatabaseHelper.getInstance()
+    val context = LocalContext.current
+
     val scrollState = rememberScrollState()
     val showMore = rememberSaveable {
         mutableStateOf(false)
     }
-    val favorData = remember { mutableStateOf(emptyList<FavoriteTable>()) }
     val data = navController.previousBackStackEntry?.savedStateHandle?.get<ProductDataItem>(DetailsScreen.DetailArgs.ProductData)
     val match = favorData.value.any { it.id == data?.id }
     val isFavorite = remember { mutableStateOf(match) }
     val ratingCount = data?.rating?.toFloatOrNull()?.toInt() ?: 0
-    val context = LocalContext.current
 
     LaunchedEffect(key1 = isFavorite,favorData,match, block = {
         favorData.value = DatabaseHelper.getInstance()?.favoriteDao()?.getAll()!!
@@ -98,7 +110,23 @@ fun DetailsScreen(navController: NavController) {
                     IconButton(onClick = {
                         val item =FavoriteTable(data.id.toString(),data.category,data.image,data.price,data.title,data.description,data.rating)
                         if (favorite != null) {
-                            favorite.favoriteDao()?.insert(item)
+                            val namesRef = database.child("FavoriteList")
+                            val key = data.id
+
+                            if (key != null) {
+                                namesRef.addListenerForSingleValueEvent(object: ValueEventListener {
+                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                        if (!dataSnapshot.hasChild(key)) {
+                                            userId.uid?.let { namesRef.child(it).child(key).setValue(item) }
+                                            favorite.favoriteDao()?.insert(item)
+                                        }
+                                    }
+
+                                    override fun onCancelled(error: DatabaseError) {
+                                        Log.i("Err",error.toString())
+                                    }
+                                })
+                            }
                         }
                         Toast.makeText(context,"${data.title} is Successfully Added to Favorite!!",Toast.LENGTH_SHORT).show()
                         isFavorite.value = !isFavorite.value
@@ -114,6 +142,9 @@ fun DetailsScreen(navController: NavController) {
                         val items = data.id?.let { FavoriteTable(it,data.category,data.image,data.price,data.title,data.description, data.rating) }
                         if (items != null) {
                             favorite?.favoriteDao()?.delete(items)
+                            userId.uid?.let {
+                                database.child("FavoriteList").child(it).child(data.id).removeValue()
+                            }
                         }
                         Toast.makeText(context,"Removed from Favorite",Toast.LENGTH_SHORT).show()
                         isFavorite.value = !isFavorite.value

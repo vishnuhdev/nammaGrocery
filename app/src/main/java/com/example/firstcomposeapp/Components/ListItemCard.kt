@@ -2,6 +2,7 @@ package com.example.firstcomposeapp.components
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -111,7 +112,7 @@ fun CustomAdder(
             onClick = onClick,
             modifier = Modifier
                 .height(45.dp)
-                .clip(RoundedCornerShape(4.dp)),
+                .clip(CircleShape),
             colors = ButtonDefaults.buttonColors(PrimaryGreen),
         ) {
             Icon(
