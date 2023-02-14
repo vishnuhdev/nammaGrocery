@@ -1,5 +1,6 @@
 package com.example.firstcomposeapp.apiService
 
+import android.annotation.SuppressLint
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -23,12 +24,14 @@ object ProductDataInstance{
         .sslSocketFactory(
             SSLContext.getInstance("SSL").apply {
                 init(null, arrayOf(object : X509TrustManager {
+                    @SuppressLint("TrustAllX509TrustManager")
                     override fun checkClientTrusted(
                         chain: Array<X509Certificate>,
                         authType: String
                     ) {
                     }
 
+                    @SuppressLint("TrustAllX509TrustManager")
                     override fun checkServerTrusted(
                         chain: Array<X509Certificate>,
                         authType: String
@@ -41,12 +44,14 @@ object ProductDataInstance{
                 }), SecureRandom()
                 )
             }.socketFactory, object : X509TrustManager {
+                @SuppressLint("TrustAllX509TrustManager")
                 override fun checkClientTrusted(
                     chain: Array<X509Certificate>,
                     authType: String
                 ) {
                 }
 
+                @SuppressLint("TrustAllX509TrustManager")
                 override fun checkServerTrusted(
                     chain: Array<X509Certificate>,
                     authType: String

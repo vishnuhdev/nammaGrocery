@@ -17,4 +17,6 @@ data class FavoriteTable(
     @ColumnInfo(name = "title") val title: String?,
     @ColumnInfo(name = "description") val description: String?,
     @ColumnInfo(name = "rating") val rating: String?,
-)
+){
+    constructor():this("","","","","","","")
+}
