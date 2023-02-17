@@ -26,8 +26,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.firstcomposeapp.DatabaseHelper
+import com.example.firstcomposeapp.NammaGroceryDB
 import com.example.firstcomposeapp.R
+import com.example.firstcomposeapp.components.CustomLoader
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
@@ -53,12 +54,16 @@ fun AccountScreen(navController: NavController) {
     }
 
     LaunchedEffect(key1 = Unit){
+        isLoading.value = true
         auth.uid?.let { it ->
             dataBase.child("AuthInfo").child(it).get().addOnSuccessListener {
                 val authInfoMap = it.value as Map<*, *>
                 userName.value = authInfoMap["userName"].toString()
+                isLoading.value = false
             }.addOnFailureListener{
+                isLoading.value = true
                 Log.e("firebase", "Error getting data", it)
+                isLoading.value = false
             }
         }
     }
@@ -72,112 +77,106 @@ fun AccountScreen(navController: NavController) {
     ) {
         Column {
             if (isLoading.value) {
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    color = Color.Black,
-                    trackColor = Color.White
-                )
+                CustomLoader()
             } else {
-                null
-            }
-            Column(
-                modifier = Modifier
-                    .padding(start = 15.dp, top = 25.dp)
-                    .background(color = Color.White)
-            )
-            {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.avatar_icon),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .height(85.dp)
-                            .width(85.dp)
-                            .clip(RoundedCornerShape(100.dp))
-                    )
-                    Column(
-                        modifier = Modifier
-                            .padding(start = 20.dp, bottom = 5.dp)
-                    )
-                    {
-                        Text(
-                            text = userName.value,
-                            fontFamily = FontFamily(Font(R.font.font_bold)),
-                            fontSize = 18.sp,
+                Column(
+                    modifier = Modifier
+                        .padding(start = 15.dp, top = 25.dp)
+                        .background(color = Color.White)
+                )
+                {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.avatar_icon),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .height(85.dp)
+                                .width(85.dp)
+                                .clip(RoundedCornerShape(100.dp))
                         )
-                        if (userEmailId != null) {
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 20.dp, bottom = 5.dp)
+                        )
+                        {
                             Text(
-                                text = userEmailId,
-                                fontFamily = FontFamily(Font(R.font.font_medium)),
-                                fontSize = 14.sp,
-                                color = Color.Gray.copy(alpha = 0.7f)
+                                text = userName.value,
+                                fontFamily = FontFamily(Font(R.font.font_bold)),
+                                fontSize = 18.sp,
                             )
+                            if (userEmailId != null) {
+                                Text(
+                                    text = userEmailId,
+                                    fontFamily = FontFamily(Font(R.font.font_medium)),
+                                    fontSize = 14.sp,
+                                    color = Color.Gray.copy(alpha = 0.7f)
+                                )
+                            }
                         }
                     }
                 }
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(0.98f)
-                    .padding(top = 25.dp, start = 20.dp)
-                    .align(alignment = Alignment.CenterHorizontally),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Widget(Image = R.drawable.order_icon, title = "Orders")
-                Widget(Image = R.drawable.mydetail, title = "My Details")
-                Widget(Image = R.drawable.loc, title = "Delivery Address")
-                Widget(Image = R.drawable.payment, title = "Payment Methods")
-                Widget(Image = R.drawable.promocode, title = "Promo Cord")
-                Widget(Image = R.drawable.bell, title = "Notifications ")
-                Widget(Image = R.drawable.help, title = "Help")
-                Widget(Image = R.drawable.about, title = "About ")
-            }
-            Card(
-                onClick = { /*TODO*/ },
-                colors = CardDefaults.cardColors(Color.Gray.copy(alpha = 0.1f)),
-                modifier = Modifier
-                    .padding(top = 30.dp)
-                    .fillMaxWidth(0.9f)
-                    .align(alignment = Alignment.CenterHorizontally)
-            ) {
-                TextButton(onClick = {
-                    isLoading.value = true
-                    GlobalScope.launch {
-                        val items = DatabaseHelper.getInstance()?.favoriteDao()?.getAll()!!
-                        DatabaseHelper.getInstance()?.favoriteDao()?.deleteAll(items)
-                    }
-                    Firebase.auth.signOut()
-                    isLoading.value = false
-                },
+                Column(
                     modifier = Modifier
-                        .align(alignment = Alignment.CenterHorizontally)
-                        .fillMaxWidth()
-                        .padding(8.dp)
+                        .fillMaxWidth(0.98f)
+                        .padding(top = 25.dp, start = 20.dp)
+                        .align(alignment = Alignment.CenterHorizontally),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.logout),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .height(24.dp)
-                            .width(24.dp),
-                        tint = PrimaryGreen
-                    )
-                    Text(
-                        text = "Log Out",
-                        color = PrimaryGreen,
-                        fontSize = 18.sp,
-                        fontFamily = FontFamily(Font(R.font.font_bold)),
-                        modifier = Modifier
-                            .padding(start = 15.dp)
-
-                    )
+                    Widget(Image = R.drawable.mydetail, title = "My Details")
+                    Widget(Image = R.drawable.order_icon, title = "Orders")
+                    Widget(Image = R.drawable.loc, title = "Delivery Address")
+                    Widget(Image = R.drawable.payment, title = "Payment Methods")
+                    Widget(Image = R.drawable.promocode, title = "Promo Cord")
+                    Widget(Image = R.drawable.bell, title = "Notifications ")
+                    Widget(Image = R.drawable.help, title = "Help")
+                    Widget(Image = R.drawable.about, title = "About ")
                 }
+                Card(
+                    onClick = { /*TODO*/ },
+                    colors = CardDefaults.cardColors(Color.Gray.copy(alpha = 0.1f)),
+                    modifier = Modifier
+                        .padding(top = 30.dp)
+                        .fillMaxWidth(0.9f)
+                        .align(alignment = Alignment.CenterHorizontally)
+                ) {
+                    TextButton(onClick = {
+                        isLoading.value = true
+                        GlobalScope.launch {
+                            val items = NammaGroceryDB.getInstance()?.favoriteDao()?.getAll()!!
+                            NammaGroceryDB.getInstance()?.favoriteDao()?.deleteAll(items)
+                        }
+                        Firebase.auth.signOut()
+                        isLoading.value = false
+                    },
+                        modifier = Modifier
+                            .align(alignment = Alignment.CenterHorizontally)
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.logout),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .height(24.dp)
+                                .width(24.dp),
+                            tint = PrimaryGreen
+                        )
+                        Text(
+                            text = "Log Out",
+                            color = PrimaryGreen,
+                            fontSize = 18.sp,
+                            fontFamily = FontFamily(Font(R.font.font_bold)),
+                            modifier = Modifier
+                                .padding(start = 15.dp)
+
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier
+                    .padding(bottom = 50.dp))
             }
-            Spacer(modifier = Modifier
-                .padding(bottom = 50.dp))
         }
     }
 }

@@ -2,21 +2,27 @@ package com.example.firstcomposeapp
 
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteOpenHelper
+import com.example.firstcomposeapp.apiService.roomDataBase.CartDao
+import com.example.firstcomposeapp.apiService.roomDataBase.CartTable
 import com.example.firstcomposeapp.apiService.roomDataBase.FavoriteDao
 import com.example.firstcomposeapp.apiService.roomDataBase.FavoriteTable
 
 @Database(
-    entities = [FavoriteTable::class],
+    entities = [FavoriteTable::class,CartTable::class],
     version = 1,
     exportSchema = false
 )
 
 abstract class AppDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao?
+    abstract fun cartDao(): CartDao?
 }
-class DatabaseHelper : RoomDatabase() {
+class NammaGroceryDB : RoomDatabase() {
     val favoriteDao: FavoriteDao?
         get() = instance!!.favoriteDao()
+
+    val cartDao: CartDao?
+        get() = instance!!.cartDao()
 
     companion object {
         private var instance: AppDatabase? = null
@@ -25,7 +31,7 @@ class DatabaseHelper : RoomDatabase() {
                 instance = Room.databaseBuilder(
                     ImpApplication.applicationContext(),
                     AppDatabase::class.java,
-                    "favoriteTable"
+                    "Namma Grocery",
                 )
                     .allowMainThreadQueries()
                     .build()
@@ -46,3 +52,47 @@ class DatabaseHelper : RoomDatabase() {
         TODO("Not yet implemented")
     }
 }
+
+
+//@Database(
+//    entities = [CartTable::class],
+//    version = 4,
+//    exportSchema = false
+//)
+//
+//abstract class CartDB : RoomDatabase() {
+//    abstract fun cartDao(): CartDao?
+//}
+//class CartDataBase : RoomDatabase() {
+//    val CartDao: CartDao?
+//        get() = instance!!.cartDao()
+//
+//    companion object {
+//        private var instance: CartDB? = null
+//        fun getInstance(): CartDB? {
+//            if (instance == null) {
+//                instance = Room.databaseBuilder(
+//                    ImpApplication.applicationContext(),
+//                    CartDB::class.java,
+//                    "cartTable"
+//                )
+//                    .allowMainThreadQueries()
+//                    .fallbackToDestructiveMigration()
+//                    .build()
+//            }
+//            return instance
+//        }
+//    }
+//
+//    override fun createOpenHelper(config: DatabaseConfiguration?): SupportSQLiteOpenHelper {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun createInvalidationTracker(): InvalidationTracker {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun clearAllTables() {
+//        TODO("Not yet implemented")
+//    }
+//}

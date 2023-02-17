@@ -93,7 +93,9 @@ fun Card(
             }
         },
         colors = CardDefaults.cardColors(Color.Transparent),
-        border = color?.let { BorderStroke(1.dp, it) }
+        border = color?.let { BorderStroke(1.dp, it) },
+        modifier = Modifier
+            .height(235.dp)
     ) {
         color?.let {
             Modifier

@@ -23,7 +23,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.example.firstcomposeapp.DatabaseHelper
+import com.example.firstcomposeapp.NammaGroceryDB
 import com.example.firstcomposeapp.R
 import com.example.firstcomposeapp.apiService.roomDataBase.FavoriteTable
 import com.example.firstcomposeapp.components.AppHeader
@@ -41,7 +41,7 @@ fun FavoriteScreen(navController: NavHostController) {
     val context = LocalContext.current
 
     LaunchedEffect(key1 = favorData) {
-        favorData.value = DatabaseHelper.getInstance()?.favoriteDao()?.getAll()!!
+        favorData.value = NammaGroceryDB.getInstance()?.favoriteDao()?.getAll()!!
     }
     Column(
         modifier = Modifier
@@ -101,7 +101,7 @@ fun FavoriteScreen(navController: NavHostController) {
                         data.description,
                         data.rating
                     )
-                    DatabaseHelper.getInstance()?.favoriteDao()?.delete(
+                    NammaGroceryDB.getInstance()?.favoriteDao()?.delete(
                         favItems = item
                     )
                     val userId = Firebase.auth
@@ -110,7 +110,7 @@ fun FavoriteScreen(navController: NavHostController) {
                         database.child("FavoriteList").child(it).child(data.id).removeValue()
                     }
                     GlobalScope.launch {
-                        favorData.value = DatabaseHelper.getInstance()?.favoriteDao()?.getAll()!!
+                        favorData.value = NammaGroceryDB.getInstance()?.favoriteDao()?.getAll()!!
                     }
                     Toast.makeText(context, "Removed from Favorite", Toast.LENGTH_SHORT).show()
                 }

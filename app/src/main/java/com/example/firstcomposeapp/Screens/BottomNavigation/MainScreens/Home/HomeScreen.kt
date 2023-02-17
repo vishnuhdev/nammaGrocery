@@ -27,10 +27,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.firstcomposeapp.DatabaseHelper
+import com.example.firstcomposeapp.NammaGroceryDB
 import com.example.firstcomposeapp.R
 import com.example.firstcomposeapp.apiService.ProductData
 import com.example.firstcomposeapp.apiService.ProductDataInstance
+import com.example.firstcomposeapp.apiService.roomDataBase.CartTable
 import com.example.firstcomposeapp.apiService.roomDataBase.FavoriteTable
 import com.example.firstcomposeapp.components.ListItemCard
 import com.example.firstcomposeapp.components.ShimmerAnimation
@@ -47,7 +48,7 @@ import retrofit2.Response
 fun HomeScreen(navController: NavHostController) {
     val products = ProductDataInstance.getProduct.getProductInfo()
     val data = remember { mutableStateOf(ProductData()) }
-
+    val cartData = remember { mutableStateOf(emptyList<CartTable>()) }
 
     var isLoading = rememberSaveable {
         mutableStateOf(true)
@@ -57,26 +58,23 @@ fun HomeScreen(navController: NavHostController) {
         isLoading.value = true
         val userId = Firebase.auth
         val namesRef = Firebase.database.reference
-        val roomDataBase = DatabaseHelper.getInstance()
+        val favoriteDataBase = NammaGroceryDB.getInstance()
+        val cartDataBase = NammaGroceryDB.getInstance()
+        cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+
         userId.uid?.let { it ->
             namesRef.child("FavoriteList").child(it).get().addOnSuccessListener { snapshot ->
                 val value = snapshot.children
-
-                    val itemList = mutableListOf<FavoriteTable>()
-                    value.forEach { entry ->
-                        val item = entry.getValue(FavoriteTable::class.java)
-                        Log.d("Entry",item.toString())
-                        if (item != null) {
-                            itemList.add(
-                                item
-                            )
-                        }
+                val itemList = mutableListOf<FavoriteTable>()
+                value.forEach { entry ->
+                    val item = entry.getValue(FavoriteTable::class.java)
+                    if (item != null) {
+                        itemList.add(item)
                     }
-                    Log.i("firebase", "got value $itemList")
-                    if (roomDataBase != null) {
-                        roomDataBase.favoriteDao()?.fireBaseInsert(itemList)
-                        isLoading.value = false
-
+                }
+                Log.i("firebase", "got value $itemList")
+                if (favoriteDataBase != null) {
+                    favoriteDataBase.favoriteDao()?.fireBaseInsert(itemList)
                 }
             }.addOnFailureListener {
                 Log.e("firebase", "Error getting data", it)
@@ -91,7 +89,6 @@ fun HomeScreen(navController: NavHostController) {
                     data.value = productData
                 }
             }
-
             override fun onFailure(call: Call<ProductData>, t: Throwable) {
                 Log.d("Err", t.toString())
             }
