@@ -8,20 +8,27 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.firstcomposeapp.NammaGroceryDB
 import com.example.firstcomposeapp.R
 import com.example.firstcomposeapp.apiService.ProductDataItem
+import com.example.firstcomposeapp.apiService.roomDataBase.CartTable
 import com.example.firstcomposeapp.navigation.DetailsScreen
 import com.example.firstcomposeapp.navigation.Graph
+import com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.home.Counter
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,7 +36,21 @@ import com.example.firstcomposeapp.ui.theme.PrimaryGreen
 fun ListItemCard(
     data: ProductDataItem,
     navController: NavController,
+    isInCart: Boolean,
+    increment: () -> Unit,
+    decrement: () -> Unit,
+    adderOnClick : () -> Unit,
+    count : String,
 ) {
+    val dataBase = NammaGroceryDB.getInstance()
+    val context = LocalContext.current
+    val cartData = remember { mutableStateOf(emptyList<CartTable>()) }
+
+    LaunchedEffect(key1 = cartData, isInCart) {
+        cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+        val cartMatch = cartData.value.any { it.id == data?.id }
+    }
+
     Card(
         onClick = {
            navController.currentBackStackEntry?.savedStateHandle?.apply {
@@ -67,7 +88,7 @@ fun ListItemCard(
                         .height(20.dp)
                 )
                 Text(
-                    text = data.title.toString(),
+                    text = data.title.toString() ,
                     fontFamily = FontFamily(Font(R.font.font_bold)),
                     fontSize = 18.sp,
                 )
@@ -96,7 +117,11 @@ fun ListItemCard(
                         fontFamily = FontFamily(Font(R.font.font_bold)),
                         fontSize = 16.sp,
                     )
-                    CustomAdder(onClick = {})
+                    if(isInCart){
+                        Counter(increment = increment, decrement = decrement, Count = count )
+                    }else{
+                        CustomAdder(onClick = adderOnClick)
+                    }
                 }
             }
         }
