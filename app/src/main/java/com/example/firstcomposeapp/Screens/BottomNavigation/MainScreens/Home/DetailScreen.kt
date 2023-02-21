@@ -197,8 +197,8 @@ fun DetailsScreen(navController: NavController) {
         Row(verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .fillMaxWidth(0.93f)
-                .padding(top = 20.dp)) {
+                .fillMaxWidth(0.98f)
+                ) {
             if (!isInCart.value) {
                 Counter(
                     increment = {
@@ -419,8 +419,7 @@ fun Counter(
     decrement: () -> Unit,
     Count: String,
 ) {
-    Row(modifier = Modifier
-        .fillMaxWidth(),
+    Row(modifier = Modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween) {
         Row(verticalAlignment = Alignment.CenterVertically) {
