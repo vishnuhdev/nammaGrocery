@@ -1,5 +1,8 @@
+@file:Suppress("NAME_SHADOWING")
+
 package com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.cartScreen
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -32,7 +36,11 @@ import com.example.firstcomposeapp.NammaGroceryDB
 import com.example.firstcomposeapp.R
 import com.example.firstcomposeapp.apiService.roomDataBase.CartTable
 import com.example.firstcomposeapp.components.AppHeader
+import com.example.firstcomposeapp.components.CustomButton
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -42,52 +50,56 @@ import kotlinx.coroutines.launch
 fun CartScreen(navController: NavHostController) {
 
     val dataBase = NammaGroceryDB.getInstance()
+    val context = LocalContext.current
 
     val cartData = remember { mutableStateOf(emptyList<CartTable>()) }
 
-    LaunchedEffect(key1 = cartData) {
-        cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+    val userId = Firebase.auth
+    val database = Firebase.database.reference
+    val totalPrice = remember {
+        mutableStateOf(0.0)
     }
 
+    LaunchedEffect(key1 = cartData, totalPrice) {
+        cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+        cartData.value.forEach {
+            if (it.finalPrice != 0.0) {
+                totalPrice.value += it.finalPrice!!
+            } else {
+                totalPrice.value += it.price?.replace("$", "")?.toDouble()!!
+            }
+        }
+    }
     Column(
         modifier = Modifier
             .background(color = Color.White)
             .fillMaxHeight(0.93f),
     ) {
-        AppHeader(
-            Header = "My Cart",
+        AppHeader(Header = "My Cart",
             LeftImg = null,
             RightImg = null,
             LeftonClick = { /*TODO*/ },
-            RightonClick = {}
-        )
+            RightonClick = {})
         if (cartData.value.isEmpty()) {
             val composition by rememberLottieComposition(LottieCompositionSpec.Asset("empty-cart.json"))
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight(0.9f)
-                    .fillMaxWidth(),
+            Column(modifier = Modifier
+                .fillMaxHeight(0.9f)
+                .fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                LottieAnimation(
-                    composition = composition,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                LottieAnimation(composition = composition,
                     iterations = 1,
-                    modifier = Modifier
-                        .height(230.dp)
-                )
+                    modifier = Modifier.height(230.dp))
                 Text(
                     text = "There is no item in the Cart",
                     fontFamily = FontFamily(Font(R.font.font_bold)),
                     fontSize = 18.sp,
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = "Once you add item to the cart, it will appear here",
+                Text(text = "Once you add item to the cart, it will appear here",
                     fontFamily = FontFamily(Font(R.font.font_medium)),
                     fontSize = 12.sp,
-                    color = Color.Gray.copy(alpha = 0.5f)
-                )
+                    color = Color.Gray.copy(alpha = 0.5f))
             }
         }
         LazyColumn(
@@ -96,69 +108,127 @@ fun CartScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(15.dp),
         ) {
             items(cartData.value) { data ->
-                CartCardItem(data,
-                    increment = {
-                        if (dataBase != null) {
-                            dataBase.cartDao()?.incrementCount(data.id)
-                            dataBase.cartDao()?.setPrice(data.id)
-                            GlobalScope.launch {
-                                cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+                CartCardItem(data, increment = {
+                    if (dataBase != null) {
+                        dataBase.cartDao()?.incrementCount(data.id)
+                        dataBase.cartDao()?.setPrice(data.id)
+                        GlobalScope.launch {
+                            val namesRef = database.child("CartList")
+                            val key = data.id
+                            val data =
+                                NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
+                            userId.uid?.let {
+                                namesRef.child(it).child(key).setValue(data)
                             }
-                        }
-                    },
-                    decrement = {
-                        if (dataBase != null) {
-                            dataBase.cartDao()?.decrementCount(data.id)
-                            dataBase.cartDao()?.setPrice(data.id)
-                            GlobalScope.launch {
-                                if (data.count == 1) {
-                                    val item = CartTable(
-                                        data.id,
-                                        data.category,
-                                        data.count,
-                                        data.image,
-                                        data.price,
-                                        0.0,
-                                        data.title,
-                                        data.description,
-                                        data.rating
-                                    )
-                                    dataBase.cartDao()?.delete(item)
+                            cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+                            totalPrice.value = 0.0
+                            cartData.value.forEach {
+                                if (it.finalPrice != 0.0) {
+                                    totalPrice.value += it.finalPrice!!
+                                } else {
+                                    totalPrice.value += it.price?.replace("$", "")?.toDouble()!!
                                 }
-                                cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                            }
-                        }
-                    },
-                    remove = {
-                        if (dataBase != null) {
-                            val item = CartTable(
-                                data.id,
-                                data.category,
-                                data.count,
-                                data.image,
-                                data.price,
-                                0.0,
-                                data.title,
-                                data.description,
-                                data.rating
-                            )
-                            dataBase.cartDao()?.delete(item)
-                            GlobalScope.launch {
-                                cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
                             }
                         }
                     }
+                }, decrement = {
+                    if (dataBase != null) {
+                        dataBase.cartDao()?.decrementCount(data.id)
+                        dataBase.cartDao()?.setPrice(data.id)
+                        val namesRef = database.child("CartList")
+                        val key = data.id
+                        GlobalScope.launch {
+                            if (data.count == 1) {
+                                val item = CartTable(data.id,
+                                    data.category,
+                                    data.count,
+                                    data.image,
+                                    data.price,
+                                    0.0,
+                                    data.title,
+                                    data.description,
+                                    data.rating)
+                                dataBase.cartDao()?.delete(item)
+                                userId.uid?.let {
+                                    namesRef.child(it).child(key).removeValue()
+                                }
+                            }
+                            val data =
+                                NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
+                            userId.uid?.let {
+                                namesRef.child(it).child(key).setValue(data)
+                            }
+                            cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+                            totalPrice.value = 0.0
+                            cartData.value.forEach {
+                                if (it.finalPrice != 0.0) {
+                                    totalPrice.value += it.finalPrice!!
+                                } else {
+                                    totalPrice.value += it.price?.replace("$", "")?.toDouble()!!
+                                }
+                            }
+                        }
+                    }
+                }, remove = {
+                    if (dataBase != null) {
+                        val item = CartTable(data.id,
+                            data.category,
+                            data.count,
+                            data.image,
+                            data.price,
+                            0.0,
+                            data.title,
+                            data.description,
+                            data.rating)
+                        dataBase.cartDao()?.delete(item)
+                        val namesRef = database.child("CartList")
+                        val key = data.id
+                        userId.uid?.let {
+                            namesRef.child(it).child(key).removeValue()
+                        }
+                        GlobalScope.launch {
+                            cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+                            totalPrice.value = 0.0
+                            cartData.value.forEach {
+                                if (it.finalPrice != 0.0) {
+                                    totalPrice.value += it.finalPrice!!
+                                } else {
+                                    totalPrice.value += it.price?.replace("$", "")?.toDouble()!!
+                                }
+                            }
+                        }
+                    }
+                })
+                Divider(
+                    thickness = 0.5.dp,
+                    color = Color.Gray.copy(alpha = 0.5f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 15.dp)
+                        .align(alignment = Alignment.CenterHorizontally),
                 )
             }
         }
-        Divider(
-            thickness = 0.5.dp,
-            color = Color.Gray.copy(alpha = 0.5f),
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .padding(top = 15.dp)
-                .align(alignment = Alignment.CenterHorizontally),
-        )
+    }
+    if (cartData.value.isNotEmpty()) {
+        Column(modifier = Modifier.fillMaxHeight(0.9f), verticalArrangement = Arrangement.Bottom) {
+            CustomButton(title = "Go to Checkout",
+                price = String.format("%.2f", totalPrice.value),
+                onClick = {
+                    val orderRef = database.child("Order History")
+                    val nameRef = database.child("CartList")
+                    userId.uid?.let {
+                        orderRef.child(it).setValue(cartData.value)
+                        nameRef.child(it).removeValue()
+                    }
+                    dataBase?.cartDao()?.deleteAll(cartData.value)
+                    Toast.makeText(context,"Ordered Successfully",Toast.LENGTH_SHORT).show()
+                    GlobalScope.launch {
+                        cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -169,67 +239,49 @@ fun CartCardItem(
     decrement: () -> Unit,
     remove: () -> Unit,
 ) {
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 12.dp),
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Image(
-            painter = rememberAsyncImagePainter(data.image),
+        horizontalArrangement = Arrangement.SpaceBetween) {
+        Image(painter = rememberAsyncImagePainter(data.image),
             null,
             modifier = Modifier
                 .height(75.dp)
                 .width(75.dp)
                 .fillMaxWidth()
-                .fillMaxHeight()
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .padding(start = 20.dp, top = 10.dp),
+                .fillMaxHeight())
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier
+                .fillMaxWidth(1f)
+                .padding(start = 20.dp, top = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+                horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     data.title?.let {
-                        Text(
-                            text = it,
+                        Text(text = it,
                             fontSize = 18.sp,
-                            fontFamily = FontFamily(Font(R.font.font_bold))
-                        )
+                            fontFamily = FontFamily(Font(R.font.font_bold)))
                     }
-                    Text(
-                        text = "1kg, Price",
+                    Text(text = "1kg, Price",
                         fontSize = 12.sp,
                         fontFamily = FontFamily(Font(R.font.font_bold)),
-                        color = Color.Gray.copy(alpha = 0.5f)
-                    )
+                        color = Color.Gray.copy(alpha = 0.5f))
                 }
                 IconButton(onClick = remove) {
-                    Image(
-                        painterResource(id = R.drawable.remove),
+                    Image(painterResource(id = R.drawable.remove),
                         null,
                         modifier = Modifier
                             .height(18.dp)
-                            .width(18.dp)
-                    )
+                            .width(18.dp))
                 }
             }
             Row {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(start = 10.dp, top = 10.dp),
+                Row(modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .padding(start = 10.dp, top = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
+                    horizontalArrangement = Arrangement.SpaceBetween) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(onClick = decrement) {
                             Image(painterResource(id = R.drawable.minus),
@@ -247,8 +299,7 @@ fun CartCardItem(
                                     BorderStroke(color = Color.Gray, width = 0.5.dp),
                                     shape = RoundedCornerShape(8.dp),
                                 )
-                                .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
-                        )
+                                .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp))
                         IconButton(onClick = increment) {
                             Icon(Icons.Outlined.Add, null, tint = PrimaryGreen)
                         }
@@ -256,22 +307,16 @@ fun CartCardItem(
                 }
                 if (data.finalPrice == 0.0) {
                     data.price?.let {
-                        Text(
-                            text = it,
+                        Text(text = it,
                             fontSize = 18.sp,
                             fontFamily = FontFamily(Font(R.font.font_bold)),
-                            modifier = Modifier
-                                .padding(top = 12.dp )
-                        )
+                            modifier = Modifier.padding(top = 12.dp))
                     }
                 } else {
-                    Text(
-                        text = "$" + data.finalPrice.toString(),
+                    Text(text = "$" + data.finalPrice.toString(),
                         fontSize = 18.sp,
                         fontFamily = FontFamily(Font(R.font.font_bold)),
-                        modifier = Modifier
-                            .padding(top = 12.dp)
-                    )
+                        modifier = Modifier.padding(top = 12.dp))
                 }
             }
         }

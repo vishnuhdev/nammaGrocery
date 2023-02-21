@@ -1,6 +1,7 @@
 package com.example.firstcomposeapp.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.firstcomposeapp.R
 import com.example.firstcomposeapp.ui.theme.Blue
+import com.example.firstcomposeapp.ui.theme.LightGreen
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
 
 @Composable
@@ -61,7 +63,7 @@ fun ButtonWithImage(
                 fontFamily = FontFamily(Font(R.font.font_black)),
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .padding(top = 15.dp , bottom = 15.dp)
+                    .padding(top = 15.dp, bottom = 15.dp)
             )
     }
 
@@ -73,7 +75,8 @@ fun ButtonWithImage(
 fun CustomButton(
     title:String,
     onClick: () -> Unit,
-    isShow : Boolean = true
+    isShow: Boolean = true,
+    price: String?,
 ){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -95,8 +98,25 @@ fun CustomButton(
                 fontFamily = FontFamily(Font(R.font.font_bold)),
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .padding(top = 10.dp , bottom = 10.dp)
+                    .padding(top = 10.dp, bottom = 10.dp)
             )
+            if (price != null) {
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                    ){
+                    Text(
+                        text = "$$price",
+                        fontSize = 17.sp,
+                        color = Color.White,
+                        fontFamily = FontFamily(Font(R.font.font_bold)),
+                        modifier = Modifier
+                            .background(color = LightGreen)
+                            .clip(shape = RoundedCornerShape(15.dp))
+                    )
+                }
+            }
         }
 
     }

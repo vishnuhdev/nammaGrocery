@@ -10,6 +10,7 @@ val PrimaryGreen = Color(0xFF53B175)
 val DarkBlue = Color(0xFF4A66AC)
 val Black = Color(0xFF0000000)
 val RatingColor = Color(0xFFF3603F)
+val LightGreen = Color(0xFF489E67)
 
 val ShimmerColorShades = listOf(
     Color.LightGray.copy(0.9f),

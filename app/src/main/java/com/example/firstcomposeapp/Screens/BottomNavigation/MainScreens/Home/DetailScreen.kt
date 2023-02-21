@@ -215,6 +215,12 @@ fun DetailsScreen(navController: NavController) {
                         }
                         if (item != null) {
                             dataBase?.cartDao()?.insert(item)
+                            val namesRef = database.child("CartList")
+                            val key = data.id
+                            val data = NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
+                            userId.uid?.let {
+                                namesRef.child(it).child(key).setValue(data)
+                            }
                             Toast.makeText(context, "Item Added to Cart", Toast.LENGTH_SHORT).show()
                             isInCart.value = !isInCart.value
                         }
@@ -241,12 +247,20 @@ fun DetailsScreen(navController: NavController) {
                             dataBase.cartDao()?.setPrice(data.id)
                             GlobalScope.launch {
                                 cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+                                val namesRef = database.child("CartList")
+                                val key = data.id
+                                val data = NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
+                                userId.uid?.let {
+                                    namesRef.child(it).child(key).setValue(data)
+                                }
                             }
                         }
                     }, decrement = {
                         if (dataBase != null) {
                             dataBase.cartDao()?.decrementCount(data.id)
                             dataBase.cartDao()?.setPrice(data.id)
+                            val namesRef = database.child("CartList")
+                            val key = data.id
                             GlobalScope.launch {
                                 if (data.count == 1) {
                                     isInCart.value = !isInCart.value
@@ -262,8 +276,13 @@ fun DetailsScreen(navController: NavController) {
                                         data.rating
                                     )
                                     dataBase.cartDao()?.delete(item)
+                                    namesRef.child(key).removeValue()
                                 }
                                 cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+                                val data = NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
+                                userId.uid?.let {
+                                    namesRef.child(it).child(key).setValue(data)
+                                }
                             }
                         }
                     }, Count = data.count.toString())
@@ -273,7 +292,7 @@ fun DetailsScreen(navController: NavController) {
                 Text(text = data.price.toString(),
                     fontSize = 22.sp,
                     fontFamily = FontFamily(Font(R.font.font_bold)),
-                    modifier = Modifier.padding(start = 15.dp))
+                    modifier = Modifier.padding(start = 5.dp))
             }
         }
         Divider(
@@ -362,7 +381,9 @@ fun DetailsScreen(navController: NavController) {
     }
     Column(modifier = Modifier.fillMaxHeight(0.98f), verticalArrangement = Arrangement.Bottom) {
         if (!isInCart.value) {
-            CustomButton(title = "Add to Basket", onClick = {
+            CustomButton(title = "Add to Basket", price = null, onClick = {
+                val namesRef = database.child("CartList")
+                val key = data?.id
                 val item = data?.id?.let {
                     CartTable(it,
                         data.category,
@@ -375,13 +396,18 @@ fun DetailsScreen(navController: NavController) {
                         data.rating)
                 }
                 if (item != null) {
+                    userId.uid?.let {
+                        if (key != null) {
+                            namesRef.child(it).child(key).setValue(item)
+                        }
+                    }
                     dataBase?.cartDao()?.insert(item)
                     Toast.makeText(context, "Item Added to Cart", Toast.LENGTH_SHORT).show()
                     isInCart.value = !isInCart.value
                 }
             })
         } else {
-            CustomButton(title = "Already in Basket ", onClick = {}, isShow = false)
+            CustomButton(title = "Already in Basket ", onClick = {}, price = null, isShow = false)
         }
     }
 }
@@ -394,8 +420,7 @@ fun Counter(
     Count: String,
 ) {
     Row(modifier = Modifier
-        .fillMaxWidth(0.82f)
-        .padding(start = 10.dp, top = 10.dp),
+        .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween) {
         Row(verticalAlignment = Alignment.CenterVertically) {

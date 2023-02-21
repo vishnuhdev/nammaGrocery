@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,14 +42,12 @@ fun ExploreScreen(navController: NavHostController) {
         Items("Beverages", R.drawable.beverage, Color(0xFFB7DFF5))
     )
 
-    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.9f)
             .background(color = Color.White)
-//            .verticalScroll(state = scrollState)
     ) {
         AppHeader(
             Header = "Find Product",

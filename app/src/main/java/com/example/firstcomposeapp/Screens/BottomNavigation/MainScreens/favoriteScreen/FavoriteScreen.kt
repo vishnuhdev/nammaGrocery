@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_IS_NOT_ENABLED")
+
 package com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.favoriteScreen
 
 import android.widget.Toast
@@ -91,7 +93,7 @@ fun FavoriteScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(15.dp),
         ) {
             items(favorData.value) { data ->
-                FavourCard(data = data, navController = navController) {
+                FavourCard(data = data) {
                     val item = FavoriteTable(
                         data.id,
                         data.category,
@@ -122,7 +124,7 @@ fun FavoriteScreen(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavourCard(data: FavoriteTable, navController: NavHostController, onClick: () -> Unit) {
+fun FavourCard(data: FavoriteTable, onClick: () -> Unit) {
 
     Card(
         onClick = {},

@@ -220,6 +220,7 @@ fun SignUpScreen(navController: NavController) {
             .height(25.dp))
         CustomButton(
             title = stringResource(id = R.string.signup),
+            price = null,
             isShow = !isLoading.value,
             onClick = {
                 isLoading.value = true

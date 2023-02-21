@@ -157,6 +157,7 @@ fun LoginWithEmail(navController: NavController) {
                 onClick = {
                     validation()
                 },
+                price = null,
                 isShow = !isLoading.value
             )
             Row(

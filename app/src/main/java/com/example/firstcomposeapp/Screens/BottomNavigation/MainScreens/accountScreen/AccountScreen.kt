@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_IS_NOT_ENABLED")
+
 package com.example.firstcomposeapp.screens.bottomNavigation.mainScreens
 
 import android.util.Log
@@ -33,10 +35,11 @@ import com.example.firstcomposeapp.ui.theme.PrimaryGreen
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
 @Composable
 fun AccountScreen(navController: NavController) {
     val scrollState = rememberScrollState()
@@ -145,7 +148,11 @@ fun AccountScreen(navController: NavController) {
                         isLoading.value = true
                         GlobalScope.launch {
                             val items = NammaGroceryDB.getInstance()?.favoriteDao()?.getAll()!!
+                            val cartItem = NammaGroceryDB.getInstance()?.cartDao()?.getAll()
                             NammaGroceryDB.getInstance()?.favoriteDao()?.deleteAll(items)
+                            if (cartItem != null) {
+                                NammaGroceryDB.getInstance()?.cartDao()?.deleteAll(cartItem)
+                            }
                         }
                         Firebase.auth.signOut()
                         isLoading.value = false
