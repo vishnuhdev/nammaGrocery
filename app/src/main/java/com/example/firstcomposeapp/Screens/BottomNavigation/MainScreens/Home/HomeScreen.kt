@@ -1,3 +1,5 @@
+@file:Suppress("NAME_SHADOWING", "OPT_IN_IS_NOT_ENABLED")
+
 package com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.home
 
 import android.annotation.SuppressLint
@@ -38,12 +40,14 @@ import com.example.firstcomposeapp.ui.theme.PrimaryGreen
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+@OptIn(DelicateCoroutinesApi::class)
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun HomeScreen(navController: NavHostController) {
@@ -51,7 +55,7 @@ fun HomeScreen(navController: NavHostController) {
     val data = remember { mutableStateOf(ProductData()) }
     val cartData = remember { mutableStateOf(emptyList<CartTable>()) }
 
-    var isLoading = rememberSaveable {
+    val isLoading = rememberSaveable {
         mutableStateOf(true)
     }
 
@@ -214,10 +218,10 @@ fun HomeScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize(1F)
             ) {
                 items(data.value) { data ->
-                    val cartMatch = cartData.value.any { it.id == data?.id }
+                    val cartMatch = cartData.value.any { it.id == data.id }
                     val isInCart = remember { mutableStateOf(cartMatch) }
                     isInCart.value = cartMatch
-                    val item = data?.id?.let { dataBase?.cartDao()?.getSingleItem(it) }
+                    val item = data.id?.let { dataBase?.cartDao()?.getSingleItem(it) }
                     val cartItem = item?.let {
                         CartTable(
                             it.id,
@@ -299,7 +303,7 @@ fun HomeScreen(navController: NavHostController) {
                             }
                         }, count = cartItem?.count.toString(),
                         adderOnClick = {
-                            val item = data?.id?.let {
+                            val item = data.id?.let {
                                 CartTable(it,
                                     data.category,
                                     1,
@@ -338,10 +342,10 @@ fun HomeScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize(1F)
             ) {
                 items(snacks) { data ->
-                    val cartMatch = cartData.value.any { it.id == data?.id }
+                    val cartMatch = cartData.value.any { it.id == data.id }
                     val isInCart = remember { mutableStateOf(cartMatch) }
                     isInCart.value = cartMatch
-                    val item = data?.id?.let { dataBase?.cartDao()?.getSingleItem(it) }
+                    val item = data.id?.let { dataBase?.cartDao()?.getSingleItem(it) }
                     val cartItem = item?.let {
                         CartTable(
                             it.id,
@@ -423,7 +427,7 @@ fun HomeScreen(navController: NavHostController) {
                             }
                         }, count = cartItem?.count.toString(),
                         adderOnClick = {
-                            val item = data?.id?.let {
+                            val item = data.id?.let {
                                 CartTable(it,
                                     data.category,
                                     1,
@@ -462,10 +466,10 @@ fun HomeScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize(1F)
             ) {
                 items(vegetableList) { data ->
-                    val cartMatch = cartData.value.any { it.id == data?.id }
+                    val cartMatch = cartData.value.any { it.id == data.id }
                     val isInCart = remember { mutableStateOf(cartMatch) }
                     isInCart.value = cartMatch
-                    val item = data?.id?.let { dataBase?.cartDao()?.getSingleItem(it) }
+                    val item = data.id?.let { dataBase?.cartDao()?.getSingleItem(it) }
                     val cartItem = item?.let {
                         CartTable(
                             it.id,
@@ -547,7 +551,7 @@ fun HomeScreen(navController: NavHostController) {
                             }
                         }, count = cartItem?.count.toString(),
                         adderOnClick = {
-                            val item = data?.id?.let {
+                            val item = data.id?.let {
                                 CartTable(it,
                                     data.category,
                                     1,
@@ -586,10 +590,10 @@ fun HomeScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize(1F)
             ) {
                 items(meat) { data ->
-                    val cartMatch = cartData.value.any { it.id == data?.id }
+                    val cartMatch = cartData.value.any { it.id == data.id }
                     val isInCart = remember { mutableStateOf(cartMatch) }
                     isInCart.value = cartMatch
-                    val item = data?.id?.let { dataBase?.cartDao()?.getSingleItem(it) }
+                    val item = data.id?.let { dataBase?.cartDao()?.getSingleItem(it) }
                     val cartItem = item?.let {
                         CartTable(
                             it.id,
@@ -630,7 +634,7 @@ fun HomeScreen(navController: NavHostController) {
                             }
                         },
                         adderOnClick = {
-                            val item = data?.id?.let {
+                            val item = data.id?.let {
                                 CartTable(it,
                                     data.category,
                                     1,
@@ -774,5 +778,3 @@ fun ShimmerEff() {
 //    }
 //}
 
-
-data class ImageUrls(val image: String)

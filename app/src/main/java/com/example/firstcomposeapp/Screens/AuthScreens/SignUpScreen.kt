@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_IS_NOT_ENABLED", "UNUSED_EXPRESSION")
+
 package com.example.firstcomposeapp.screens.authScreens
 
 import android.util.Log
@@ -35,13 +37,13 @@ import com.google.firebase.ktx.Firebase
 @Composable
 fun SignUpScreen(navController: NavController) {
 
-    var database = Firebase.database.reference
-    var auth = Firebase.auth
+    val database = Firebase.database.reference
+    val auth = Firebase.auth
     val isLoading = rememberSaveable {
         mutableStateOf(false)
     }
 
-    var scrollState = rememberScrollState()
+    val scrollState = rememberScrollState()
 
     val userName = rememberSaveable {
         mutableStateOf("")
@@ -66,9 +68,7 @@ fun SignUpScreen(navController: NavController) {
                 color = Color.Black,
                 trackColor = Color.White
             )
-        } else {
-            null
-        }
+        } else null
 
         Image(
             painter = painterResource(id = R.drawable.logo),
@@ -234,7 +234,6 @@ fun SignUpScreen(navController: NavController) {
                             auth.uid?.let { database.child("AuthInfo").child(it).setValue(userInfo) }
                             Log.d("AUTH", "signInWithEmail:success")
                             isLoading.value = false
-                            val user = auth.currentUser
                         } else {
                             Log.w("AUTH", "signInWithEmail:failure:${task.exception}")
                             isLoading.value = false

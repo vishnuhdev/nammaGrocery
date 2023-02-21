@@ -137,7 +137,7 @@ fun AccountScreen(navController: NavController) {
                     Widget(Image = R.drawable.about, title = "About ")
                 }
                 Card(
-                    onClick = { /*TODO*/ },
+                    onClick = {},
                     colors = CardDefaults.cardColors(Color.Gray.copy(alpha = 0.1f)),
                     modifier = Modifier
                         .padding(top = 30.dp)
@@ -191,14 +191,14 @@ fun AccountScreen(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Widget(
+private fun Widget(
     Image: Int,
     title: String,
 ) {
-    var painter = painterResource(Image)
+    val painter = painterResource(Image)
 
     Card(
-        onClick = { /*TODO*/ },
+        onClick = { },
         colors = CardDefaults.cardColors(Color.White),
         modifier = Modifier
             .fillMaxWidth()
@@ -231,7 +231,7 @@ fun Widget(
                         .padding(start = 10.dp)
                 )
             }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {  }) {
                 Icon(Icons.Default.KeyboardArrowRight, null)
             }
 

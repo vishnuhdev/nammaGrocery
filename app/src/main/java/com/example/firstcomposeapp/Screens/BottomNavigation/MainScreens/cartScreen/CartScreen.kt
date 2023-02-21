@@ -1,4 +1,4 @@
-@file:Suppress("NAME_SHADOWING")
+@file:Suppress("NAME_SHADOWING", "OPT_IN_IS_NOT_ENABLED")
 
 package com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.cartScreen
 

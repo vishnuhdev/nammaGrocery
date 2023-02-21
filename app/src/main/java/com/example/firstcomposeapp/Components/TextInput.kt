@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_IS_NOT_ENABLED")
+
 package com.example.firstcomposeapp.components
 
 import androidx.compose.foundation.layout.*

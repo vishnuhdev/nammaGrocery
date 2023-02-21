@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_IS_NOT_ENABLED")
+
 package com.example.firstcomposeapp.components
 
 import androidx.compose.foundation.*
@@ -15,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -42,13 +43,10 @@ fun ListItemCard(
     adderOnClick : () -> Unit,
     count : String,
 ) {
-    val dataBase = NammaGroceryDB.getInstance()
-    val context = LocalContext.current
     val cartData = remember { mutableStateOf(emptyList<CartTable>()) }
 
     LaunchedEffect(key1 = cartData, isInCart) {
         cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-        val cartMatch = cartData.value.any { it.id == data?.id }
     }
 
     Card(
