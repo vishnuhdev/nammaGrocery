@@ -32,6 +32,7 @@ import com.example.firstcomposeapp.NammaGroceryDB
 import com.example.firstcomposeapp.R
 import com.example.firstcomposeapp.apiService.ProductData
 import com.example.firstcomposeapp.apiService.ProductDataInstance
+import com.example.firstcomposeapp.apiService.ProductDataItem
 import com.example.firstcomposeapp.apiService.roomDataBase.CartTable
 import com.example.firstcomposeapp.apiService.roomDataBase.FavoriteTable
 import com.example.firstcomposeapp.components.ListItemCard
@@ -63,6 +64,11 @@ fun HomeScreen(navController: NavHostController) {
     val firebaseDB = Firebase.database.reference
     val userId = Firebase.auth
     val context = LocalContext.current
+
+    val scrollState = rememberScrollState()
+    val vegetableList = data.value.filter { it.category == "Vegetables" }
+    val snacks = data.value.filter { it.category == "Snacks" || it.category == "Bakery" }
+    val meat = data.value.filter { it.category == "Meat" || it.category == "Fish" }
 
 //    val carouselImages = listOf(
 //        "https://www.bigbasket.com/media/uploads/banner_images/hp_bcd_m_bcd_250123_400.jpg",
@@ -137,10 +143,110 @@ fun HomeScreen(navController: NavHostController) {
         })
     }
 
-    val scrollState = rememberScrollState()
-    val vegetableList = data.value.filter { it.category == "Vegetables" }
-    val snacks = data.value.filter { it.category == "Snacks" || it.category == "Bakery" }
-    val meat = data.value.filter { it.category == "Meat" || it.category == "Fish" }
+    fun increment(
+        data: ProductDataItem,
+    ) {
+        if (dataBase != null) {
+            data.id?.let { dataBase.cartDao()?.incrementCount(it) }
+            data.id?.let { dataBase.cartDao()?.setPrice(it) }
+            GlobalScope.launch {
+                cartData.value =
+                    NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+                val namesRef = firebaseDB.child("CartList")
+                val key = data.id
+                val data =
+                    data.id?.let {
+                        NammaGroceryDB.getInstance()?.cartDao()
+                            ?.getSingleItem(it)
+                    }
+                userId.uid?.let {
+                    if (key != null) {
+                        namesRef.child(it).child(key).setValue(data)
+                    }
+                }
+            }
+        }
+    }
+
+    fun decrement(
+        data: ProductDataItem,
+        cartItem: CartTable,
+    ) {
+        if (dataBase != null) {
+            data.id?.let { dataBase.cartDao()?.decrementCount(it) }
+            data.id?.let { dataBase.cartDao()?.setPrice(it) }
+            val namesRef = firebaseDB.child("CartList")
+            val key = data.id
+            GlobalScope.launch {
+                if (cartItem != null) {
+                    if (cartItem.count == 1) {
+                        val item = CartTable(
+                            cartItem.id,
+                            cartItem.category,
+                            cartItem.count,
+                            cartItem.image,
+                            cartItem.price,
+                            0.0,
+                            cartItem.title,
+                            cartItem.description,
+                            cartItem.rating
+                        )
+                        dataBase.cartDao()?.delete(item)
+                        if (key != null) {
+                            namesRef.child(key).removeValue()
+                        }
+                    }
+                }
+                cartData.value =
+                    NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+                val data =
+                    data.id?.let {
+                        NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(
+                            it
+                        )
+                    }
+                userId.uid?.let {
+                    if (key != null) {
+                        namesRef.child(it).child(key).setValue(data)
+                    }
+                }
+            }
+        }
+    }
+
+    fun adderOnClick(
+        data: ProductDataItem,
+    ) {
+        val item = data.id?.let {
+            CartTable(
+                it,
+                data.category,
+                1,
+                data.image,
+                data.price,
+                0.0,
+                data.title,
+                data.description,
+                data.rating
+            )
+        }
+        if (item != null) {
+            dataBase?.cartDao()?.insert(item)
+            val namesRef = firebaseDB.child("CartList")
+            val key = data.id
+            val data =
+                NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
+            userId.uid?.let {
+                namesRef.child(it).child(key).setValue(data)
+            }
+            Toast.makeText(context, "Item Added to Cart", Toast.LENGTH_SHORT)
+                .show()
+            GlobalScope.launch {
+                cartData.value =
+                    NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+            }
+        }
+    }
 
     if (isLoading.value) {
         ShimmerEff()
@@ -201,8 +307,10 @@ fun HomeScreen(navController: NavHostController) {
 //                    cursorColor = Color.DarkGray
 //                )
 //            )
-            Spacer(modifier = Modifier
-                .height(20.dp))
+            Spacer(
+                modifier = Modifier
+                    .height(20.dp)
+            )
             Image(
                 painter = painterResource(id = R.drawable.banner),
                 null,
@@ -235,102 +343,20 @@ fun HomeScreen(navController: NavHostController) {
                             item.rating
                         )
                     }
-
                     ListItemCard(data = data,
                         isInCart = isInCart.value,
                         navController = navController,
                         increment = {
-                            if (dataBase != null) {
-                                data.id?.let { dataBase.cartDao()?.incrementCount(it) }
-                                data.id?.let { dataBase.cartDao()?.setPrice(it) }
-                                GlobalScope.launch {
-                                    cartData.value =
-                                        NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                                    val namesRef = firebaseDB.child("CartList")
-                                    val key = data.id
-                                    val data =
-                                        data.id?.let {
-                                            NammaGroceryDB.getInstance()?.cartDao()
-                                                ?.getSingleItem(it)
-                                        }
-                                    userId.uid?.let {
-                                        if (key != null) {
-                                            namesRef.child(it).child(key).setValue(data)
-                                        }
-                                    }
-                                }
-                            }
+                            increment(data)
                         }, decrement = {
-                            if (dataBase != null) {
-                                data.id?.let { dataBase.cartDao()?.decrementCount(it) }
-                                data.id?.let { dataBase.cartDao()?.setPrice(it) }
-                                val namesRef = firebaseDB.child("CartList")
-                                val key = data.id
-                                GlobalScope.launch {
-                                    if (cartItem != null) {
-                                        if (cartItem.count == 1) {
-                                            isInCart.value = !isInCart.value
-                                            val item = CartTable(
-                                                cartItem.id,
-                                                cartItem.category,
-                                                cartItem.count,
-                                                cartItem.image,
-                                                cartItem.price,
-                                                0.0,
-                                                cartItem.title,
-                                                cartItem.description,
-                                                cartItem.rating
-                                            )
-                                            dataBase.cartDao()?.delete(item)
-                                            if (key != null) {
-                                                namesRef.child(key).removeValue()
-                                            }
-                                        }
-                                    }
-                                    cartData.value =
-                                        NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                                    val data =
-                                        data.id?.let {
-                                            NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(
-                                                it)
-                                        }
-                                    userId.uid?.let {
-                                        if (key != null) {
-                                            namesRef.child(it).child(key).setValue(data)
-                                        }
-                                    }
-                                }
+                            if (cartItem != null) {
+                                decrement(data, cartItem)
+                                isInCart.value = !isInCart.value
                             }
                         }, count = cartItem?.count.toString(),
                         adderOnClick = {
-                            val item = data.id?.let {
-                                CartTable(it,
-                                    data.category,
-                                    1,
-                                    data.image,
-                                    data.price,
-                                    0.0,
-                                    data.title,
-                                    data.description,
-                                    data.rating)
-                            }
-                            if (item != null) {
-                                dataBase?.cartDao()?.insert(item)
-                                val namesRef = firebaseDB.child("CartList")
-                                val key = data.id
-                                val data =
-                                    NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
-                                userId.uid?.let {
-                                    namesRef.child(it).child(key).setValue(data)
-                                }
-                                Toast.makeText(context, "Item Added to Cart", Toast.LENGTH_SHORT)
-                                    .show()
-                                isInCart.value = !isInCart.value
-                                GlobalScope.launch {
-                                    cartData.value =
-                                        NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                                }
-                            }
+                            adderOnClick(data)
+                            isInCart.value = !isInCart.value
                         }
                     )
                 }
@@ -359,102 +385,20 @@ fun HomeScreen(navController: NavHostController) {
                             item.rating
                         )
                     }
-
                     ListItemCard(data = data,
                         isInCart = isInCart.value,
                         navController = navController,
                         increment = {
-                            if (dataBase != null) {
-                                data.id?.let { dataBase.cartDao()?.incrementCount(it) }
-                                data.id?.let { dataBase.cartDao()?.setPrice(it) }
-                                GlobalScope.launch {
-                                    cartData.value =
-                                        NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                                    val namesRef = firebaseDB.child("CartList")
-                                    val key = data.id
-                                    val data =
-                                        data.id?.let {
-                                            NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(
-                                                it)
-                                        }
-                                    userId.uid?.let {
-                                        if (key != null) {
-                                            namesRef.child(it).child(key).setValue(data)
-                                        }
-                                    }
-                                }
-                            }
+                            increment(data)
                         }, decrement = {
-                            if (dataBase != null) {
-                                data.id?.let { dataBase.cartDao()?.decrementCount(it) }
-                                data.id?.let { dataBase.cartDao()?.setPrice(it) }
-                                val namesRef = firebaseDB.child("CartList")
-                                val key = data.id
-                                GlobalScope.launch {
-                                    if (cartItem != null) {
-                                        if (cartItem.count == 1) {
-                                            isInCart.value = !isInCart.value
-                                            val item = CartTable(
-                                                cartItem.id,
-                                                cartItem.category,
-                                                cartItem.count,
-                                                cartItem.image,
-                                                cartItem.price,
-                                                0.0,
-                                                cartItem.title,
-                                                cartItem.description,
-                                                cartItem.rating
-                                            )
-                                            dataBase.cartDao()?.delete(item)
-                                            if (key != null) {
-                                                namesRef.child(key).removeValue()
-                                            }
-                                        }
-                                    }
-                                    cartData.value =
-                                        NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                                    val data =
-                                        data.id?.let {
-                                            NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(
-                                                it)
-                                        }
-                                    userId.uid?.let {
-                                        if (key != null) {
-                                            namesRef.child(it).child(key).setValue(data)
-                                        }
-                                    }
-                                }
+                            if (cartItem != null) {
+                                decrement(data, cartItem)
+                                isInCart.value = !isInCart.value
                             }
                         }, count = cartItem?.count.toString(),
                         adderOnClick = {
-                            val item = data.id?.let {
-                                CartTable(it,
-                                    data.category,
-                                    1,
-                                    data.image,
-                                    data.price,
-                                    0.0,
-                                    data.title,
-                                    data.description,
-                                    data.rating)
-                            }
-                            if (item != null) {
-                                dataBase?.cartDao()?.insert(item)
-                                val namesRef = firebaseDB.child("CartList")
-                                val key = data.id
-                                val data =
-                                    NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
-                                userId.uid?.let {
-                                    namesRef.child(it).child(key).setValue(data)
-                                }
-                                Toast.makeText(context, "Item Added to Cart", Toast.LENGTH_SHORT)
-                                    .show()
-                                isInCart.value = !isInCart.value
-                                GlobalScope.launch {
-                                    cartData.value =
-                                        NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                                }
-                            }
+                            adderOnClick(data)
+                            isInCart.value = !isInCart.value
                         }
                     )
                 }
@@ -483,102 +427,20 @@ fun HomeScreen(navController: NavHostController) {
                             item.rating
                         )
                     }
-
                     ListItemCard(data = data,
                         isInCart = isInCart.value,
                         navController = navController,
                         increment = {
-                            if (dataBase != null) {
-                                data.id?.let { dataBase.cartDao()?.incrementCount(it) }
-                                data.id?.let { dataBase.cartDao()?.setPrice(it) }
-                                GlobalScope.launch {
-                                    cartData.value =
-                                        NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                                    val namesRef = firebaseDB.child("CartList")
-                                    val key = data.id
-                                    val data =
-                                        data.id?.let {
-                                            NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(
-                                                it)
-                                        }
-                                    userId.uid?.let {
-                                        if (key != null) {
-                                            namesRef.child(it).child(key).setValue(data)
-                                        }
-                                    }
-                                }
-                            }
+                            increment(data)
                         }, decrement = {
-                            if (dataBase != null) {
-                                data.id?.let { dataBase.cartDao()?.decrementCount(it) }
-                                data.id?.let { dataBase.cartDao()?.setPrice(it) }
-                                val namesRef = firebaseDB.child("CartList")
-                                val key = data.id
-                                GlobalScope.launch {
-                                    if (cartItem != null) {
-                                        if (cartItem.count == 1) {
-                                            isInCart.value = !isInCart.value
-                                            val item = CartTable(
-                                                cartItem.id,
-                                                cartItem.category,
-                                                cartItem.count,
-                                                cartItem.image,
-                                                cartItem.price,
-                                                0.0,
-                                                cartItem.title,
-                                                cartItem.description,
-                                                cartItem.rating
-                                            )
-                                            dataBase.cartDao()?.delete(item)
-                                            if (key != null) {
-                                                namesRef.child(key).removeValue()
-                                            }
-                                        }
-                                    }
-                                    cartData.value =
-                                        NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                                    val data =
-                                        data.id?.let {
-                                            NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(
-                                                it)
-                                        }
-                                    userId.uid?.let {
-                                        if (key != null) {
-                                            namesRef.child(it).child(key).setValue(data)
-                                        }
-                                    }
-                                }
+                            if (cartItem != null) {
+                                decrement(data, cartItem)
+                                isInCart.value = !isInCart.value
                             }
                         }, count = cartItem?.count.toString(),
                         adderOnClick = {
-                            val item = data.id?.let {
-                                CartTable(it,
-                                    data.category,
-                                    1,
-                                    data.image,
-                                    data.price,
-                                    0.0,
-                                    data.title,
-                                    data.description,
-                                    data.rating)
-                            }
-                            if (item != null) {
-                                dataBase?.cartDao()?.insert(item)
-                                val namesRef = firebaseDB.child("CartList")
-                                val key = data.id
-                                val data =
-                                    NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
-                                userId.uid?.let {
-                                    namesRef.child(it).child(key).setValue(data)
-                                }
-                                Toast.makeText(context, "Item Added to Cart", Toast.LENGTH_SHORT)
-                                    .show()
-                                isInCart.value = !isInCart.value
-                                GlobalScope.launch {
-                                    cartData.value =
-                                        NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                                }
-                            }
+                            adderOnClick(data)
+                            isInCart.value = !isInCart.value
                         }
                     )
                 }
@@ -607,104 +469,21 @@ fun HomeScreen(navController: NavHostController) {
                             item.rating
                         )
                     }
-
                     ListItemCard(data = data,
                         isInCart = isInCart.value,
                         navController = navController,
                         increment = {
-                            if (dataBase != null) {
-                                data.id?.let { dataBase.cartDao()?.incrementCount(it) }
-                                data.id?.let { dataBase.cartDao()?.setPrice(it) }
-                                GlobalScope.launch {
-                                    cartData.value =
-                                        NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                                    val namesRef = firebaseDB.child("CartList")
-                                    val key = data.id
-                                    val data =
-                                        data.id?.let {
-                                            NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(
-                                                it)
-                                        }
-                                    userId.uid?.let {
-                                        if (key != null) {
-                                            namesRef.child(it).child(key).setValue(data)
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        adderOnClick = {
-                            val item = data.id?.let {
-                                CartTable(it,
-                                    data.category,
-                                    1,
-                                    data.image,
-                                    data.price,
-                                    0.0,
-                                    data.title,
-                                    data.description,
-                                    data.rating)
-                            }
-                            if (item != null) {
-                                dataBase?.cartDao()?.insert(item)
-                                val namesRef = firebaseDB.child("CartList")
-                                val key = data.id
-                                val data =
-                                    NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
-                                userId.uid?.let {
-                                    namesRef.child(it).child(key).setValue(data)
-                                }
-                                Toast.makeText(context, "Item Added to Cart", Toast.LENGTH_SHORT)
-                                    .show()
+                            increment(data)
+                        }, decrement = {
+                            if (cartItem != null) {
+                                decrement(data, cartItem)
                                 isInCart.value = !isInCart.value
-                                GlobalScope.launch {
-                                    cartData.value =
-                                        NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                                }
                             }
-                        },
-                        decrement = {
-                            if (dataBase != null) {
-                                data.id?.let { dataBase.cartDao()?.decrementCount(it) }
-                                data.id?.let { dataBase.cartDao()?.setPrice(it) }
-                                val namesRef = firebaseDB.child("CartList")
-                                val key = data.id
-                                GlobalScope.launch {
-                                    if (cartItem != null) {
-                                        if (cartItem.count == 1) {
-                                            isInCart.value = !isInCart.value
-                                            val item = CartTable(
-                                                cartItem.id,
-                                                cartItem.category,
-                                                cartItem.count,
-                                                cartItem.image,
-                                                cartItem.price,
-                                                0.0,
-                                                cartItem.title,
-                                                cartItem.description,
-                                                cartItem.rating
-                                            )
-                                            dataBase.cartDao()?.delete(item)
-                                            if (key != null) {
-                                                namesRef.child(key).removeValue()
-                                            }
-                                        }
-                                    }
-                                    cartData.value =
-                                        NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                                    val data =
-                                        data.id?.let {
-                                            NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(
-                                                it)
-                                        }
-                                    userId.uid?.let {
-                                        if (key != null) {
-                                            namesRef.child(it).child(key).setValue(data)
-                                        }
-                                    }
-                                }
-                            }
-                        }, count = cartItem?.count.toString()
+                        }, count = cartItem?.count.toString(),
+                        adderOnClick = {
+                            adderOnClick(data)
+                            isInCart.value = !isInCart.value
+                        }
                     )
                 }
             }
