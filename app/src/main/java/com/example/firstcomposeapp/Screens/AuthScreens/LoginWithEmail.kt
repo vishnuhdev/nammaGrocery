@@ -60,7 +60,7 @@ fun LoginWithEmail(navController: NavController) {
 
     fun validation() {
         if (email.value.isEmpty() and passWord.value.isNotEmpty()) {
-            err.value = "U"
+            err.value = "Username is Empty"
         }
         if (passWord.value.isEmpty() and email.value.isNotEmpty()) {
             Toast.makeText(mContext, "Password is Empty", Toast.LENGTH_SHORT).show()
@@ -90,7 +90,7 @@ fun LoginWithEmail(navController: NavController) {
     )
     {
         if (isLoading.value) {
-            Column{
+            Column {
                 CustomLoader()
             }
         } else {
@@ -104,7 +104,8 @@ fun LoginWithEmail(navController: NavController) {
                     .width(85.dp)
                     .align(alignment = Alignment.CenterHorizontally)
             )
-            Text(text = "Loging",
+            Text(
+                text = "Loging",
                 fontFamily = FontFamily(Font(R.font.font_bold)),
                 fontSize = 26.sp,
                 modifier = Modifier
@@ -133,7 +134,10 @@ fun LoginWithEmail(navController: NavController) {
             )
             PassWordInput(title = "password", value = passWord.value,
                 Error = err.value,
-                onValueChange = { passWord.value = it }
+                onValueChange = { passWord.value = it },
+                onDone = {
+                    validation()
+                }
             )
             Row(
                 modifier = Modifier
@@ -151,9 +155,12 @@ fun LoginWithEmail(navController: NavController) {
                     )
                 }
             }
-            Spacer(modifier = Modifier
-                .height(10.dp))
-            CustomButton(title = stringResource(id = R.string.login),
+            Spacer(
+                modifier = Modifier
+                    .height(10.dp)
+            )
+            CustomButton(
+                title = stringResource(id = R.string.login),
                 onClick = {
                     validation()
                 },

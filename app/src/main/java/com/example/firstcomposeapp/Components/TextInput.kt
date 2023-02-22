@@ -84,9 +84,9 @@ fun PassWordInput(
     title: String,
     value : String,
     onValueChange :(String) -> Unit = {},
-    Error : String
+    Error : String,
+    onDone : () -> Unit,
 ){
-    val focusManager = LocalFocusManager.current
 
     val showPassword = rememberSaveable{
         mutableStateOf(false)
@@ -112,7 +112,9 @@ fun PassWordInput(
                 .padding(top = 7.dp),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Password),
-            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+            keyboardActions = KeyboardActions(onDone = {
+               onDone()
+            }),
             maxLines = 1,
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.White,
@@ -152,7 +154,6 @@ fun PassWordInput(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 15.dp, top = 3.dp)
-
         )
     }
 }

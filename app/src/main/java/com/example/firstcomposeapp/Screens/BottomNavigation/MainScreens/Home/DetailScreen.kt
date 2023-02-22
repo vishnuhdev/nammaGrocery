@@ -103,8 +103,12 @@ fun DetailsScreen(navController: NavController) {
             LeftonClick = { navController.popBackStack() },
             RightonClick = {})
         if (data != null) {
+            val painter = rememberAsyncImagePainter(
+                data.image,
+                placeholder = painterResource(id = R.drawable.empty)
+            )
             Image(
-                painter = rememberAsyncImagePainter(data.image),
+                painter = painter,
                 contentDescription = null,
                 modifier = Modifier
                     .height(250.dp)

@@ -2,6 +2,7 @@
 
 package com.example.firstcomposeapp.components
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -9,14 +10,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -73,8 +72,12 @@ fun ListItemCard(
                 .width(150.dp)
         ) {
             Column {
+                val painter = rememberAsyncImagePainter(
+                    data.image,
+                    placeholder = painterResource(id = R.drawable.empty)
+                )
                 Image(
-                    painter = rememberAsyncImagePainter(data.image),
+                    painter = painter,
                     contentDescription = "Image",
                     modifier = Modifier
                         .height(79.dp)
