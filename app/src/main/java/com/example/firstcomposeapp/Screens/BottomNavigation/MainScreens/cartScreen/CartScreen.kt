@@ -218,7 +218,8 @@ fun CartScreen(navController: NavHostController) {
                     val orderRef = database.child("Order History")
                     val nameRef = database.child("CartList")
                     userId.uid?.let {
-                        orderRef.child(it).setValue(cartData.value)
+                        val random = (0..500).shuffled().last()
+                        orderRef.child(it).child("Order Id $random").setValue(cartData.value)
                         nameRef.child(it).removeValue()
                     }
                     dataBase?.cartDao()?.deleteAll(cartData.value)

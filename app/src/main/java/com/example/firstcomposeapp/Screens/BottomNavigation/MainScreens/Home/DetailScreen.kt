@@ -4,6 +4,7 @@ package com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.home
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -71,7 +73,9 @@ fun DetailsScreen(navController: NavController) {
     val showMore = rememberSaveable {
         mutableStateOf(false)
     }
-    val data = navController.previousBackStackEntry?.savedStateHandle?.get<ProductDataItem>(DetailsScreen.DetailArgs.ProductData)
+    val rotateState = animateFloatAsState(targetValue = if (showMore.value) -180f else 0f)
+    val data =
+        navController.previousBackStackEntry?.savedStateHandle?.get<ProductDataItem>(DetailsScreen.DetailArgs.ProductData)
     val favMatch = favorData.value.any { it.id == data?.id }
     val isFavorite = remember { mutableStateOf(favMatch) }
     val cartMatch = cartData.value.any { it.id == data?.id }
@@ -87,49 +91,61 @@ fun DetailsScreen(navController: NavController) {
         isInCart.value = cartMatch
     })
 
-    Column(modifier = Modifier
-        .fillMaxHeight(0.89f)
-        .verticalScroll(state = scrollState)
-        .background(color = Color.White)) {
+    Column(
+        modifier = Modifier
+            .fillMaxHeight(0.89f)
+            .verticalScroll(state = scrollState)
+            .background(color = Color.White)
+    ) {
         AppHeader(Header = null,
             LeftImg = R.drawable.back_ios_new_24,
             RightImg = null,
             LeftonClick = { navController.popBackStack() },
             RightonClick = {})
         if (data != null) {
-            Image(painter = rememberAsyncImagePainter(data.image),
+            Image(
+                painter = rememberAsyncImagePainter(data.image),
                 contentDescription = null,
                 modifier = Modifier
                     .height(250.dp)
                     .width(330.dp)
                     .align(alignment = Alignment.CenterHorizontally)
-                    .fillMaxWidth())
+                    .fillMaxWidth()
+            )
         }
         Spacer(modifier = Modifier.height(25.dp))
         if (data != null) {
-            Row(verticalAlignment = Alignment.CenterVertically,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth(0.98f)) {
+                modifier = Modifier.fillMaxWidth(0.98f)
+            ) {
                 Column {
-                    Text(text = data.title.toString(),
+                    Text(
+                        text = data.title.toString(),
                         fontSize = 24.sp,
                         fontFamily = FontFamily(Font(R.font.font_black)),
-                        modifier = Modifier.padding(start = 15.dp))
-                    Text(text = "1Kg,Price",
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                    Text(
+                        text = "1Kg,Price",
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.font_medium)),
                         modifier = Modifier.padding(start = 15.dp, top = 5.dp),
-                        color = Color.Gray.copy(alpha = 0.5f))
+                        color = Color.Gray.copy(alpha = 0.5f)
+                    )
                 }
                 if (!isFavorite.value) {
                     IconButton(onClick = {
-                        val item = FavoriteTable(data.id.toString(),
+                        val item = FavoriteTable(
+                            data.id.toString(),
                             data.category,
                             data.image,
                             data.price,
                             data.title,
                             data.description,
-                            data.rating)
+                            data.rating
+                        )
                         if (dataBase != null) {
                             val namesRef = database.child("FavoriteList")
                             val key = data.id
@@ -152,27 +168,33 @@ fun DetailsScreen(navController: NavController) {
                                 })
                             }
                         }
-                        Toast.makeText(context,
+                        Toast.makeText(
+                            context,
                             "${data.title} is Successfully Added to Favorite!!",
-                            Toast.LENGTH_SHORT).show()
+                            Toast.LENGTH_SHORT
+                        ).show()
                         isFavorite.value = !isFavorite.value
                     }) {
-                        Icon(Icons.Outlined.FavoriteBorder,
+                        Icon(
+                            Icons.Outlined.FavoriteBorder,
                             contentDescription = null,
                             modifier = Modifier
                                 .height(28.dp)
-                                .width(28.dp))
+                                .width(28.dp)
+                        )
                     }
                 } else {
                     IconButton(onClick = {
                         val items = data.id?.let {
-                            FavoriteTable(it,
+                            FavoriteTable(
+                                it,
                                 data.category,
                                 data.image,
                                 data.price,
                                 data.title,
                                 data.description,
-                                data.rating)
+                                data.rating
+                            )
                         }
                         if (items != null) {
                             dataBase?.favoriteDao()?.delete(items)
@@ -184,26 +206,30 @@ fun DetailsScreen(navController: NavController) {
                         Toast.makeText(context, "Removed from Favorite", Toast.LENGTH_SHORT).show()
                         isFavorite.value = !isFavorite.value
                     }) {
-                        Icon(Icons.Outlined.Favorite,
+                        Icon(
+                            Icons.Outlined.Favorite,
                             contentDescription = null,
                             modifier = Modifier
                                 .height(28.dp)
                                 .width(28.dp),
-                            tint = Color.Red)
+                            tint = Color.Red
+                        )
                     }
                 }
             }
         }
-        Row(verticalAlignment = Alignment.CenterVertically,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth(0.98f)
-                ) {
+        ) {
             if (!isInCart.value) {
                 Counter(
                     increment = {
                         val item = data?.id?.let {
-                            CartTable(it,
+                            CartTable(
+                                it,
                                 data.category,
                                 1,
                                 data.image,
@@ -211,20 +237,23 @@ fun DetailsScreen(navController: NavController) {
                                 0.0,
                                 data.title,
                                 data.description,
-                                data.rating)
+                                data.rating
+                            )
                         }
                         if (item != null) {
                             dataBase?.cartDao()?.insert(item)
                             val namesRef = database.child("CartList")
                             val key = data.id
-                            val data = NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
+                            val data =
+                                NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
                             userId.uid?.let {
                                 namesRef.child(it).child(key).setValue(data)
                             }
                             Toast.makeText(context, "Item Added to Cart", Toast.LENGTH_SHORT).show()
                             isInCart.value = !isInCart.value
                         }
-                    }, decrement = { }, Count = "0")
+                    }, decrement = { }, Count = "0"
+                )
             } else {
                 val item = data?.id?.let { dataBase?.cartDao()?.getSingleItem(it) }
                 val data = item?.let {
@@ -249,7 +278,8 @@ fun DetailsScreen(navController: NavController) {
                                 cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
                                 val namesRef = database.child("CartList")
                                 val key = data.id
-                                val data = NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
+                                val data =
+                                    NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
                                 userId.uid?.let {
                                     namesRef.child(it).child(key).setValue(data)
                                 }
@@ -279,7 +309,8 @@ fun DetailsScreen(navController: NavController) {
                                     namesRef.child(key).removeValue()
                                 }
                                 cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                                val data = NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
+                                val data =
+                                    NammaGroceryDB.getInstance()?.cartDao()?.getSingleItem(data.id)
                                 userId.uid?.let {
                                     namesRef.child(it).child(key).setValue(data)
                                 }
@@ -289,10 +320,12 @@ fun DetailsScreen(navController: NavController) {
                 }
             }
             if (data != null) {
-                Text(text = data.price.toString(),
+                Text(
+                    text = data.price.toString(),
                     fontSize = 22.sp,
                     fontFamily = FontFamily(Font(R.font.font_bold)),
-                    modifier = Modifier.padding(start = 5.dp))
+                    modifier = Modifier.padding(start = 5.dp)
+                )
             }
         }
         Divider(
@@ -303,29 +336,28 @@ fun DetailsScreen(navController: NavController) {
                 .padding(top = 15.dp)
                 .align(alignment = Alignment.CenterHorizontally),
         )
-        Row(verticalAlignment = Alignment.CenterVertically,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth(0.99f)) {
-            Text(text = "Product Details",
+            modifier = Modifier.fillMaxWidth(0.99f)
+        ) {
+            Text(
+                text = "Product Details",
                 fontSize = 18.sp,
                 fontFamily = FontFamily(Font(R.font.font_bold)),
-                modifier = Modifier.padding(start = 15.dp, top = 10.dp))
+                modifier = Modifier.padding(start = 15.dp, top = 10.dp)
+            )
             IconButton(onClick = {
                 showMore.value = !showMore.value
             }) {
-                if (showMore.value) {
-                    Icon(Icons.Outlined.KeyboardArrowUp,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .height(28.dp)
-                            .width(28.dp))
-                } else {
-                    Icon(Icons.Outlined.KeyboardArrowDown,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .height(28.dp)
-                            .width(28.dp))
-                }
+                Icon(
+                    Icons.Outlined.KeyboardArrowUp,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .height(28.dp)
+                        .width(28.dp)
+                        .rotate(rotateState.value)
+                )
             }
         }
         if (data != null && showMore.value) {
@@ -347,24 +379,30 @@ fun DetailsScreen(navController: NavController) {
                 .padding(top = 15.dp)
                 .align(alignment = Alignment.CenterHorizontally),
         )
-        Row(verticalAlignment = Alignment.CenterVertically,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth(0.98f)
-                .padding(top = 10.dp)) {
-            Text(text = "Review",
+                .padding(top = 10.dp)
+        ) {
+            Text(
+                text = "Review",
                 fontSize = 18.sp,
                 fontFamily = FontFamily(Font(R.font.font_bold)),
-                modifier = Modifier.padding(start = 15.dp, top = 10.dp))
+                modifier = Modifier.padding(start = 15.dp, top = 10.dp)
+            )
             Row {
                 repeat(5) { index ->
                     if (data != null) {
-                        Icon(Icons.Default.Star,
+                        Icon(
+                            Icons.Default.Star,
                             contentDescription = null,
                             modifier = Modifier
                                 .height(15.dp)
                                 .width(15.dp),
-                            tint = if (index < ratingCount) RatingColor else Color.Gray)
+                            tint = if (index < ratingCount) RatingColor else Color.Gray
+                        )
                     }
 
                 }
@@ -385,7 +423,8 @@ fun DetailsScreen(navController: NavController) {
                 val namesRef = database.child("CartList")
                 val key = data?.id
                 val item = data?.id?.let {
-                    CartTable(it,
+                    CartTable(
+                        it,
                         data.category,
                         1,
                         data.image,
@@ -393,7 +432,8 @@ fun DetailsScreen(navController: NavController) {
                         0.0,
                         data.title,
                         data.description,
-                        data.rating)
+                        data.rating
+                    )
                 }
                 if (item != null) {
                     userId.uid?.let {
@@ -419,18 +459,23 @@ fun Counter(
     decrement: () -> Unit,
     Count: String,
 ) {
-    Row(modifier = Modifier,
+    Row(
+        modifier = Modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween) {
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = decrement) {
-                Image(painterResource(id = R.drawable.minus),
+                Image(
+                    painterResource(id = R.drawable.minus),
                     null,
                     modifier = Modifier
                         .height(16.dp)
-                        .width(12.dp))
+                        .width(12.dp)
+                )
             }
-            Text(text = Count,
+            Text(
+                text = Count,
                 fontFamily = FontFamily(Font(R.font.font_bold)),
                 fontSize = 18.sp,
                 color = Color.Black,
@@ -439,7 +484,8 @@ fun Counter(
                         BorderStroke(color = Color.Gray, width = 0.5.dp),
                         shape = RoundedCornerShape(8.dp),
                     )
-                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp))
+                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
+            )
             IconButton(onClick = increment) {
                 Icon(Icons.Outlined.Add, null, tint = PrimaryGreen)
             }
