@@ -8,7 +8,7 @@ plugins {
 android {
     signingConfigs {
         debug {
-            storeFile file('C:\\Users\\Admin\\.android\\studio\\FirstComposeApp\\app\\my-upload-keystore.jks')
+            storeFile file('D:\\FirstComposeApp\\app\\my-upload-keystore.jks')
             storePassword 'android'
             keyAlias 'my-alias'
             keyPassword 'android'
@@ -48,7 +48,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.1.1'
+        kotlinCompilerExtensionVersion '1.4.0'
     }
     packagingOptions {
         resources {

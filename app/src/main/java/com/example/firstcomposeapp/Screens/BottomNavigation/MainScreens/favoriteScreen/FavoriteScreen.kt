@@ -27,7 +27,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.firstcomposeapp.NammaGroceryDB
 import com.example.firstcomposeapp.R
-import com.example.firstcomposeapp.apiService.roomDataBase.FavoriteTable
+import com.example.firstcomposeapp.roomDataBase.FavoriteTable
 import com.example.firstcomposeapp.components.AppHeader
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database

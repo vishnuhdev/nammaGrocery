@@ -31,7 +31,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.firstcomposeapp.NammaGroceryDB
 import com.example.firstcomposeapp.R
-import com.example.firstcomposeapp.apiService.roomDataBase.CartTable
+import com.example.firstcomposeapp.roomDataBase.CartTable
 import com.example.firstcomposeapp.components.AppHeader
 import com.example.firstcomposeapp.components.CustomButton
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen

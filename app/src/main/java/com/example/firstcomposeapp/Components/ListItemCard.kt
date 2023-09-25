@@ -24,8 +24,8 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.firstcomposeapp.NammaGroceryDB
 import com.example.firstcomposeapp.R
-import com.example.firstcomposeapp.apiService.ProductDataItem
-import com.example.firstcomposeapp.apiService.roomDataBase.CartTable
+import com.example.firstcomposeapp.modals.ProductDataItem
+import com.example.firstcomposeapp.roomDataBase.CartTable
 import com.example.firstcomposeapp.navigation.DetailsScreen
 import com.example.firstcomposeapp.navigation.Graph
 import com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.home.Counter

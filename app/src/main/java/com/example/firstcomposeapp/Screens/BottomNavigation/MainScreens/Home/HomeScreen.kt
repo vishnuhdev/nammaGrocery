@@ -30,11 +30,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.firstcomposeapp.NammaGroceryDB
 import com.example.firstcomposeapp.R
-import com.example.firstcomposeapp.apiService.ProductData
+import com.example.firstcomposeapp.modals.ProductData
 import com.example.firstcomposeapp.apiService.ProductDataInstance
-import com.example.firstcomposeapp.apiService.ProductDataItem
-import com.example.firstcomposeapp.apiService.roomDataBase.CartTable
-import com.example.firstcomposeapp.apiService.roomDataBase.FavoriteTable
+import com.example.firstcomposeapp.modals.ProductDataItem
+import com.example.firstcomposeapp.roomDataBase.CartTable
+import com.example.firstcomposeapp.roomDataBase.FavoriteTable
 import com.example.firstcomposeapp.components.ListItemCard
 import com.example.firstcomposeapp.components.ShimmerAnimation
 import com.example.firstcomposeapp.ui.theme.PrimaryGreen
