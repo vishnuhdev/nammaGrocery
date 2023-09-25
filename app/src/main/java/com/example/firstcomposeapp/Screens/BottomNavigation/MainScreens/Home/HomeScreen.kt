@@ -42,17 +42,14 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 @OptIn(DelicateCoroutinesApi::class)
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun HomeScreen(navController: NavHostController) {
-    val products = ProductDataInstance.getProduct.getProductInfo()
     val data = remember { mutableStateOf(ProductData()) }
     val cartData = remember { mutableStateOf(emptyList<CartTable>()) }
 
@@ -70,15 +67,6 @@ fun HomeScreen(navController: NavHostController) {
     val snacks = data.value.filter { it.category == "Snacks" || it.category == "Bakery" }
     val meat = data.value.filter { it.category == "Meat" || it.category == "Fish" }
 
-//    val carouselImages = listOf(
-//        "https://www.bigbasket.com/media/uploads/banner_images/hp_bcd_m_bcd_250123_400.jpg",
-//        "https://www.bigbasket.com/media/uploads/banner_images/hp_m_health_suppliment_250123_400.jpg",
-//        "https://www.bigbasket.com/media/uploads/banner_images/hp_m_babycare_250123_400.jpg",
-//        "https://www.bigbasket.com/media/uploads/banner_images/hp_m_petstore_250123_400.jpg",
-//        "https://www.bigbasket.com/media/uploads/banner_images/hp_m_cmc_mahaShivratri_400_140223.jpg",
-//        "https://www.bigbasket.com/media/uploads/banner_images/HP_EMF_M_WeekdayBangalore-1600x460-230213.jpeg",
-//        "https://www.bigbasket.com/media/uploads/banner_images/hp_m_Dry_FishBanner_1600x460_070922.jpg",
-//    )
 
     LaunchedEffect(key1 = cartData) {
         cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
@@ -127,20 +115,20 @@ fun HomeScreen(navController: NavHostController) {
                 Log.e("firebase", "Error getting data", it)
             }
         }
-        products.enqueue(object : Callback<ProductData> {
-            override fun onResponse(call: Call<ProductData>, response: Response<ProductData>) {
-                isLoading.value = true
-                val productData = response.body()
-                isLoading.value = false
-                if (productData != null) {
-                    data.value = productData
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val response = ProductDataInstance.api?.getProductInfo()
+            if (response != null) {
+                if (response.isSuccessful) {
+                    isLoading.value = true
+                    val productData = response.body()
+                    isLoading.value = false
+                    if (productData != null) {
+                        data.value = productData
+                    }
                 }
             }
-
-            override fun onFailure(call: Call<ProductData>, t: Throwable) {
-                Log.d("Err", t.toString())
-            }
-        })
+        }
     }
 
     fun increment(

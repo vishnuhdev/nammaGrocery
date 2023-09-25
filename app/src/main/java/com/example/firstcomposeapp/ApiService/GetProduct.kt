@@ -2,25 +2,20 @@ package com.example.firstcomposeapp.apiService
 
 import android.annotation.SuppressLint
 import okhttp3.OkHttpClient
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
 import javax.net.ssl.X509TrustManager
 
 
-const val BASE_URL = "https://jsonkeeper.com/b/"
-interface GetProduct {
-    @GET("DG4S")
-    fun getProductInfo():Call<ProductData>
-}
+const val BASE_URL = "https://api.jsonserve.com/"
+
 
 object ProductDataInstance{
-    val getProduct: GetProduct
-    val okHttpClient = OkHttpClient.Builder()
+
+    private val okHttpClient = OkHttpClient.Builder()
         .sslSocketFactory(
             SSLContext.getInstance("SSL").apply {
                 init(null, arrayOf(object : X509TrustManager {
@@ -65,12 +60,13 @@ object ProductDataInstance{
         )
         .hostnameVerifier { _, _ -> true }
         .build()
-    init {
-        val retrofit = Retrofit.Builder()
+
+
+        val api: GetProduct? = Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        getProduct = retrofit.create(GetProduct::class.java)
-    }
+            .create(GetProduct::class.java)
+
 }

@@ -12,9 +12,7 @@ class ImpApplication : Application() {
     }
 
     companion object {
-
         private lateinit var instance: ImpApplication
-
         fun applicationContext(): Context {
             return instance.applicationContext
         }

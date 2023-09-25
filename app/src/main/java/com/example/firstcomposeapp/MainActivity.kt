@@ -9,8 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.firstcomposeapp.navigation.Root
+import com.example.firstcomposeapp.screens.authScreens.OtpScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -24,7 +23,8 @@ class MainActivity : ComponentActivity() {
                     .fillMaxSize()
                     .background(Color.White))
             {
-                    Root(navController = rememberNavController())
+//                    Root(navController = rememberNavController())
+                OtpScreen()
             }
         }
     }

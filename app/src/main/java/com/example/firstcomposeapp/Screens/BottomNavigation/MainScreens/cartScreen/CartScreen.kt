@@ -2,7 +2,6 @@
 
 package com.example.firstcomposeapp.screens.bottomNavigation.mainScreens.cartScreen
 
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,11 +12,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,7 +42,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-@OptIn(DelicateCoroutinesApi::class)
+@OptIn(DelicateCoroutinesApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(navController: NavHostController) {
 
@@ -59,6 +56,9 @@ fun CartScreen(navController: NavHostController) {
     val totalPrice = remember {
         mutableStateOf(0.0)
     }
+
+    var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+//    val bottomSheetState = rememberSheetState(skipHalfExpanded = true)
 
     LaunchedEffect(key1 = cartData, totalPrice) {
         cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
@@ -189,6 +189,7 @@ fun CartScreen(navController: NavHostController) {
                         GlobalScope.launch {
                             cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
                             totalPrice.value = 0.0
+                            totalPrice.value = 0.0
                             cartData.value.forEach {
                                 if (it.finalPrice != 0.0) {
                                     totalPrice.value += it.finalPrice!!
@@ -210,23 +211,46 @@ fun CartScreen(navController: NavHostController) {
             }
         }
     }
+//    if (openBottomSheet) {
+//        ModalBottomSheet(
+//            onDismissRequest = { openBottomSheet = false },
+//            sheetState = bottomSheetState,
+//        ) {
+//            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+//                Button(
+//                    // Note: If you provide logic outside of onDismissRequest to remove the sheet,
+//                    // you must additionally handle intended state cleanup, if any.
+//                    onClick = {
+//                        GlobalScope.launch { bottomSheetState.hide() }.invokeOnCompletion {
+//                            if (!bottomSheetState.isVisible) {
+//                                openBottomSheet = false
+//                            }
+//                        }
+//                    }
+//                ) {
+//                    Text("Hide Bottom Sheet")
+//                }
+//            }
+//        }
+//    }
     if (cartData.value.isNotEmpty()) {
         Column(modifier = Modifier.fillMaxHeight(0.9f), verticalArrangement = Arrangement.Bottom) {
             CustomButton(title = "Go to Checkout",
                 price = String.format("%.2f", totalPrice.value),
                 onClick = {
-                    val orderRef = database.child("Order History")
-                    val nameRef = database.child("CartList")
-                    userId.uid?.let {
-                        val random = (0..500).shuffled().last()
-                        orderRef.child(it).child("Order Id $random").setValue(cartData.value)
-                        nameRef.child(it).removeValue()
-                    }
-                    dataBase?.cartDao()?.deleteAll(cartData.value)
-                    Toast.makeText(context,"Ordered Successfully",Toast.LENGTH_SHORT).show()
-                    GlobalScope.launch {
-                        cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
-                    }
+                    openBottomSheet = true
+//                    val orderRef = database.child("Order History")
+//                    val nameRef = database.child("CartList")
+//                    userId.uid?.let {
+//                        val random = (0..500).shuffled().last()
+//                        orderRef.child(it).child("Order Id $random").setValue(cartData.value)
+//                        nameRef.child(it).removeValue()
+//                    }
+//                    dataBase?.cartDao()?.deleteAll(cartData.value)
+//                    Toast.makeText(context,"Ordered Successfully",Toast.LENGTH_SHORT).show()
+//                    GlobalScope.launch {
+//                        cartData.value = NammaGroceryDB.getInstance()?.cartDao()?.getAll()!!
+//                    }
                 }
             )
         }
@@ -322,4 +346,10 @@ fun CartCardItem(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomSheet(){
+
 }

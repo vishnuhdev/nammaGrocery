@@ -135,7 +135,8 @@ fun DetailsScreen(navController: NavController) {
                         text = "1Kg,Price",
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.font_medium)),
-                        modifier = Modifier.padding(start = 15.dp, top = 5.dp),
+                        modifier = Modifier
+                            .padding(start = 15.dp, top = 5.dp),
                         color = Color.Gray.copy(alpha = 0.5f)
                     )
                 }
